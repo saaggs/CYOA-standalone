@@ -77,6 +77,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -115,6 +118,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FCharacter.cpp" />
+    <ClCompile Include="FILESGame.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="TextColors.cpp" />
+    <ClCompile Include="TextWrap.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FCharacter.h" />
+    <ClInclude Include="FILESGame.h" />
+    <ClInclude Include="TextColors.h" />
+    <ClInclude Include="TextWrap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
