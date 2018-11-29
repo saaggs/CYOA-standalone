@@ -29,6 +29,7 @@ void Races::ResetRaceMods()
 
 void Races::GetDrazenRaceMods()
 {
+	ResetRaceMods();
 	RandomStatSelector(2);
 	RandomStatSelector(2);
 	BaseHPDie = 10;

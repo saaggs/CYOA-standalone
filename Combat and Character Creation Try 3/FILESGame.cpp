@@ -50,6 +50,7 @@ void FILESGame::CreatePlayerCharacter()
 	Player.GenerateStatMods();
 	Player.GenerateRaceStatMods();
 	Player.ApplyRaceStatMods();
+	Player.PrintRaceStatMods();
 	Player.GenerateStatMods();
 	Player.GenerateStartingHP();
 	Player.FinishStats();
@@ -98,8 +99,10 @@ void FILESGame::GenerateNPCs()
 			Characters[i].GenerateNPCName("DragonNames.txt");
 		}
 		Characters[i].RollStats();
+		Characters[i].PrintStartingStats();
 		Characters[i].GenerateRaceStatMods();
 		Characters[i].ApplyRaceStatMods();
+		Characters[i].PrintRaceStatMods();
 		Characters[i].GenerateStatMods();
 		Characters[i].GenerateStartingHP();
 		Characters[i].FinishStats();
@@ -159,10 +162,13 @@ void FILESGame::Combat()
 			Characters[i].PrintMyInitiative();
 			Fighters.push_back(Characters[i]);
 		}
+		//SortFightOrder(Fighters);
+		///*
 		std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
 		{
 			return a.MyInitiativeValue() > b.MyInitiativeValue();
 		});
+		//*/
 		PrintFightOrder(Fighters);
 		
 		return;
@@ -184,15 +190,6 @@ bool FILESGame::AskToPlayAgain()
 	return AskToPlay();
 }
 
-bool FILESGame::SortFightOrder(std::vector<Character> Fighters)
-{
-	std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
-	{
-		return a.MyInitiativeValue() > b.MyInitiativeValue();
-	});
-	return false;
-}
-
 void FILESGame::PrintFightOrder(std::vector<Character> Fighters)
 {
 	for (int i = 0; i < Fighters.size(); i++)
@@ -201,3 +198,14 @@ void FILESGame::PrintFightOrder(std::vector<Character> Fighters)
 			"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
 	}
 }
+
+/*
+void SortFightOrder(std::vector<Character> Fighters)
+{
+	std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
+	{
+		return a.MyInitiativeValue() > b.MyInitiativeValue();
+	});
+	return;
+}
+*/

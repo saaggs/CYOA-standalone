@@ -25,7 +25,6 @@ public:
 	void Combat();
 	bool AskToKeepPlaying();
 	bool AskToPlayAgain();
-	bool SortFightOrder(std::vector<Character> Fighters);
 	void PrintFightOrder(std::vector<Character> Fighters);
 
 private:
@@ -36,4 +35,4 @@ private:
 };
 
 
-
+//void SortFightOrder(std::vector<Character> Fighters);
