@@ -473,3 +473,23 @@ void Character::PrintMyInitiative()
 	C.Green();
 	return;
 }
+
+int Character::GetMyToHit()
+{
+	return MyToHit;
+}
+
+int Character::GetMyAC()
+{
+	return MyAC;
+}
+
+int Character::GetMyBaseDamage()
+{
+	return MyBaseDamage;
+}
+
+void Character::TakeDamage(int Damage)
+{
+	MyCurrentHP = (MyCurrentHP - Damage);
+}

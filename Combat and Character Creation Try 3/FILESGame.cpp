@@ -162,15 +162,40 @@ void FILESGame::Combat()
 			Characters[i].PrintMyInitiative();
 			Fighters.push_back(Characters[i]);
 		}
-		//SortFightOrder(Fighters);
-		///*
 		std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
 		{
 			return a.MyInitiativeValue() > b.MyInitiativeValue();
 		});
-		//*/
 		PrintFightOrder(Fighters);
-		
+		if (Fighters[0].GetFullName() == Player.GetFullName())
+		{
+			int AttackRoll = (((rand() % 19) + 1) + Player.GetMyToHit());
+			std::cout << Player.GetFullName() << " rolls a " << AttackRoll << " and ";
+			if (AttackRoll > Fighters[1].GetMyAC())
+			{
+				int Damage = (((rand() % 19) + 1) + Player.GetMyBaseDamage());
+				Fighters[1].TakeDamage(Damage);
+				std::cout << "HITS " << Fighters[1].GetFullName() <<
+					" for " << Damage << " points of damage!" << std::endl;
+			}
+			else
+				std::cout << "misses " << Fighters[1].GetFullName() << std::endl;
+		}
+		else
+		{
+			int AttackRoll = (((rand() % 19) + 1) + Fighters[0].GetMyToHit());
+			std::cout << Fighters[0].GetFullName() << " rolls a " << AttackRoll << " and ";
+			if (AttackRoll > Player.GetMyAC())
+			{
+				int Damage = (((rand() % 19) + 1) + Fighters[0].GetMyBaseDamage());
+				Player.TakeDamage(Damage);
+				std::cout << "HITS " << Player.GetFullName() << " for " << Damage << " points of damage!" <<
+					std::endl;
+			}
+			else
+				std::cout << "misses " << Player.GetFullName() << std::endl;
+		}
+		//std::cout << "Fighter "
 		return;
 	}
 	else

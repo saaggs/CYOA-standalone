@@ -48,7 +48,10 @@ public:
 	int GetMyInitiative();
 	int MyInitiativeValue();
 	void PrintMyInitiative();
-	friend class CompareInitiatives;
+	int GetMyToHit();
+	int GetMyAC();
+	int GetMyBaseDamage();
+	void TakeDamage(int Damage);
 
 private:
 
