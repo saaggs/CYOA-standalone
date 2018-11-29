@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <vector>
 #include <iterator>
+#include <stdexcept>
 #include "FILESGame.h"
 
 
@@ -138,6 +139,7 @@ bool FILESGame::AskToRollAgain()
 	return AskToPlay();
 }
 
+
 void FILESGame::Combat()
 {
 	int NPCs = Characters.size();
@@ -145,6 +147,7 @@ void FILESGame::Combat()
 	if (NPCs > 0)
 	{
 		std::vector <Character> Fighters;
+
 		Player.ResetMyInitiative();
 		Player.GetMyInitiative();
 		Player.PrintMyInitiative();
@@ -161,7 +164,10 @@ void FILESGame::Combat()
 			std::cout << Fighters[i].GetFullName() <<
 				"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
 		}
-		//std::sort(Characters.begin(), Characters.end(), CompareInitiatives());
+		std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
+		{
+			return a.MyInitiativeValue() > b.MyInitiativeValue();
+		});
 		for (int i = 0; i < Fighters.size(); i++)
 		{
 			std::cout << Fighters[i].GetFullName() <<

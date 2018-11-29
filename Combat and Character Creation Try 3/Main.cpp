@@ -33,6 +33,7 @@ int main()
 	
 	Clean();
 	*/
+	
 	srand(time(NULL));
 	bool bPlayAgain = false;
 	do
@@ -42,7 +43,8 @@ int main()
 		bPlayAgain = ILESGame.AskToPlayAgain();
 	} while (bPlayAgain == true);
 	
-	//Clean();
+
+	Clean();
 	std::cout << std::endl;
 	return 0;
 }

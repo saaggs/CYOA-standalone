@@ -80,3 +80,11 @@ private:
 	int MyToHit = 0;
 	int MyBaseDamage = 0;
 };
+
+
+/*
+bool InitComp(Character &A, Character &B)
+{
+	return A.MyInitiativeValue() > B.MyInitiativeValue();
+}
+*/
