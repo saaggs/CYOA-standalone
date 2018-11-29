@@ -159,20 +159,12 @@ void FILESGame::Combat()
 			Characters[i].PrintMyInitiative();
 			Fighters.push_back(Characters[i]);
 		}
-		for (int i = 0; i < Fighters.size(); i++)
-		{
-			std::cout << Fighters[i].GetFullName() <<
-				"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
-		}
 		std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
 		{
 			return a.MyInitiativeValue() > b.MyInitiativeValue();
 		});
-		for (int i = 0; i < Fighters.size(); i++)
-		{
-			std::cout << Fighters[i].GetFullName() <<
-				"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
-		}
+		PrintFightOrder(Fighters);
+		
 		return;
 	}
 	else
@@ -190,4 +182,22 @@ bool FILESGame::AskToPlayAgain()
 {
 	std::cout << "Do you want to play again, yes or no? ";
 	return AskToPlay();
+}
+
+bool FILESGame::SortFightOrder(std::vector<Character> Fighters)
+{
+	std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
+	{
+		return a.MyInitiativeValue() > b.MyInitiativeValue();
+	});
+	return false;
+}
+
+void FILESGame::PrintFightOrder(std::vector<Character> Fighters)
+{
+	for (int i = 0; i < Fighters.size(); i++)
+	{
+		std::cout << Fighters[i].GetFullName() <<
+			"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
+	}
 }

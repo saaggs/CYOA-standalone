@@ -25,12 +25,14 @@ public:
 	void Combat();
 	bool AskToKeepPlaying();
 	bool AskToPlayAgain();
-
+	bool SortFightOrder(std::vector<Character> Fighters);
+	void PrintFightOrder(std::vector<Character> Fighters);
 
 private:
 
 	std::string MyCharacterClassName = "";
 	int NumberOfNPCs = 0;
+
 };
 
 
