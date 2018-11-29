@@ -15,8 +15,29 @@ Races::~Races()
 {
 }
 
+void Races::ResetRaceMods()
+{
+	STRRaceMod = 0;
+	DEXRaceMod = 0;
+	CONRaceMod = 0;
+	INTRaceMod = 0;
+	WISRaceMod = 0;
+	CHARaceMod = 0;
+	BaseHPDie = 10;
+	return;
+}
+
+void Races::GetDrazenRaceMods()
+{
+	RandomStatSelector(2);
+	RandomStatSelector(2);
+	BaseHPDie = 10;
+	return;
+}
+
 void Races::GetDragonRaceMods()
 {
+	ResetRaceMods();
 	RandomStatSelector(4);
 	RandomStatSelector(4);
 	BaseHPDie = 15;
@@ -25,6 +46,7 @@ void Races::GetDragonRaceMods()
 
 void Races::GetGiganticFlyRaceMods()
 {
+	ResetRaceMods();
 	DEXRaceMod = 8;
 	CONRaceMod = -8;
 	INTRaceMod = -2;
@@ -35,6 +57,7 @@ void Races::GetGiganticFlyRaceMods()
 
 void Races::GetGoblinRaceMods()
 {
+	ResetRaceMods();
 	STRRaceMod = -2;
 	DEXRaceMod = 2;
 	CONRaceMod = -2;
@@ -44,6 +67,7 @@ void Races::GetGoblinRaceMods()
 
 void Races::GetHumanRaceMods()
 {
+	ResetRaceMods();
 	RandomStatSelector(2);
 	RandomStatSelector(2);
 	BaseHPDie = 10;
@@ -52,6 +76,7 @@ void Races::GetHumanRaceMods()
 
 void Races::GetOrcRaceMods()
 {
+	ResetRaceMods();
 	STRRaceMod = 4;
 	CONRaceMod = 4;
 	INTRaceMod = -2;
@@ -59,19 +84,45 @@ void Races::GetOrcRaceMods()
 	return;
 }
 
-void Races::RandomStatSelector(int Mod)
+void Races::GetAllOtherRaceMods()
+{
+	ResetRaceMods();
+	BaseHPDie = 10;
+	return;
+}
+
+int Races::RandomStatSelector(int Mod)
 {
 	int Stats[6] =
 	{
-		STRRaceMod,
-		DEXRaceMod,
-		CONRaceMod,
-		INTRaceMod,
-		WISRaceMod,
-		CHARaceMod
+		0, 1, 2, 3, 4, 5
 	};
-	Stats[rand() % 6] + Mod;
-	return;
+	int Stat = Stats[rand() % 6];
+	if (Stat == 0)
+	{
+		return STRRaceMod = STRRaceMod + Mod;
+	}
+	else if (Stat == 1)
+	{
+		return DEXRaceMod = DEXRaceMod + Mod;
+	}
+	else if (Stat == 2)
+	{
+		return CONRaceMod = CONRaceMod + Mod;
+	}
+	else if (Stat == 3)
+	{
+		return INTRaceMod = INTRaceMod + Mod;
+	}
+	else if (Stat == 4)
+	{
+		return WISRaceMod = WISRaceMod + Mod;
+	}
+	else if (Stat == 5)
+	{
+		return CHARaceMod = CHARaceMod + Mod;
+	}
+	return 0;
 }
 
 void Races::PrintRaceStatMods()
@@ -82,6 +133,7 @@ void Races::PrintRaceStatMods()
 	std::cout << "INT Goes up by " << INTRaceMod << std::endl;
 	std::cout << "WIS Goes up by " << WISRaceMod << std::endl;
 	std::cout << "CHA Goes up by " << CHARaceMod << std::endl;
+	std::cout << "BaseHDDie = " << BaseHPDie << std::endl;
 }
 
 int Races::GetSTRRaceMod()
@@ -112,4 +164,9 @@ int Races::GetWISRaceMod()
 int Races::GetCHARaceMod()
 {
 	return CHARaceMod;
+}
+
+int Races::GetBaseHPDie()
+{
+	return BaseHPDie;
 }

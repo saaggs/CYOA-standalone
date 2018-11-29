@@ -10,8 +10,10 @@
 #include <fstream>
 #include "FCharacter.h"
 #include "TextWrapAndCAPS.h"
+#include "TextColors.h"
 
 TextWrapAndCAPS TWC;
+TextColors C;
 
 
 Character::Character()
@@ -23,10 +25,21 @@ Character::~Character()
 {
 }
 
-std::string Character::EnterRace()
+std::string Character::EnterRace(std::string Race)
 {
-	std::cout << "ENTER a Race of your choosing: ";
+	C.Green();
+	std::cout << "ENTER a Race of your choosing: -- ";
+	C.Grey();
 	std::getline(std::cin, MyRace);
+	if (MyRace.length() <= 1)
+	{
+		return MyRace = Race;
+	}
+	else if (MyRace == "  ")
+	{
+		return MyRace = "";
+	}
+	else
 	return MyRace;
 }
 
@@ -49,10 +62,21 @@ std::string Character::GetRace()
 	return std::string(MyRace);
 }
 
-std::string Character::CreateFirstName()
+std::string Character::CreateFirstName(std::string Name)
 {
-	std::cout << "ENTER a First Name of your choosing: ";
+	C.Green();
+	std::cout << "ENTER a first Name of your choosing: -- ";
+	C.Grey();
 	std::getline(std::cin, MyFirstName);
+	if (MyFirstName.length() <= 1)
+	{
+		return MyFirstName = Name;
+	}
+	else if (MyFirstName == "  ")
+	{
+		return MyFirstName = "";
+	}
+	else
 	return MyFirstName;
 }
 
@@ -82,9 +106,32 @@ std::string Character::GetFirstName()
 	return std::string(MyFirstName);
 }
 
+std::string Character::CreateLastName(std::string LastName)
+{
+	C.Green();
+	std::cout << "ENTER a last Name of your choosing: -- ";
+	C.Grey();
+	std::getline(std::cin, MyLastName);
+	if (MyLastName.length() <= 1)
+	{
+		return MyLastName = LastName;
+	}
+	else if (MyLastName == "  ")
+	{
+		return MyLastName = "";
+	}
+	else
+	return MyLastName;
+}
+
 std::string Character::GetName()
 {
 	return std::string(MyName);
+}
+
+std::string Character::GetFullName()
+{
+	return std::string(MyFullName);
 }
 
 std::string Character::GenerateNPCName(std::string FileName)
@@ -111,6 +158,53 @@ std::string Character::GenerateNPCName(std::string FileName)
 		std::cout << "The file containing Names.txt didn't open." << std::endl;
 	}
 	return std::string();
+}
+
+std::string Character::CreateTitle(std::string Title)
+{
+	std::string suggestions;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+	std::cout << "\nEnter your title.  Something like: ";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
+	suggestions = "\'Lord\', \'Lady\', " /* \'Prince\', \'Princess\', \'King\', \'Queen\',"
+	"\'Baron\', */ "\'Baroness\', or \'Count\'";  //"\'Viceroy\', \'Vicar\', \'Count\', or \'Countess\'";
+	TWC.outputText(suggestions);
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+	std::cout << " -- ";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+	std::getline(std::cin, MyTitle);
+	if (MyTitle.length() <= 1)
+	{
+		return MyTitle = Title;
+	}
+	else if (MyTitle == "  ")
+	{
+		return MyTitle = "";
+	}
+	else
+	return MyTitle;
+}
+
+std::string Character::CreateDesig(std::string Desig)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+	std::cout << "\nENTER your designation.  Something like ";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
+	std::cout << "\'the Bane of Blackcreek\'";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+	std::cout << " -- ";
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+	std::getline(std::cin, MyDesig);
+	if (MyDesig.length() <= 1)
+	{
+		return MyDesig = Desig;
+	}
+	else if (MyDesig == "  ")
+	{
+		return MyDesig = "";
+	}
+	else
+	return MyDesig;
 }
 
 void Character::PrintStartingStats()
@@ -164,10 +258,14 @@ void Character::PrintCharacterSheet()
 	std::cout << std::left << std::setw(5) << "STR: " << std::left << std::setw(4) << MySTR;
 	if (MySTRMod < 0)
 	{
-		std::cout << std::left << std::setw(1) << "(" << MySTRMod << std::left << std::setw(10) << ")" << std::endl;
+		std::cout << std::left << std::setw(1) << "(" << MySTRMod << std::left << std::setw(10) << ")"; // << std::endl;
 	}
-	else std::cout << std::left << std::setw(1) << "(+" << MySTRMod << std::left << std::setw(10) << ")" << std::endl;
-
+	else
+	{
+		std::cout << std::left << std::setw(1) << "(+" << MySTRMod << std::left << std::setw(10) << ")"; // << std::endl;
+	}
+	std::cout << std::left << std::setw(6) << "THP: ";
+	std::cout << std::left << std::setw(15) << MyTotalHP << std::endl;
 	std::cout << std::left << std::setw(5) << "DEX: " << std::left << std::setw(4) << MyDEX;
 	if (MyDEXMod < 0)
 	{
@@ -178,13 +276,13 @@ void Character::PrintCharacterSheet()
 		std::cout << std::left << std::setw(1) << "(+" << MyDEXMod << std::left << std::setw(10) << ")";
 	}
 
-	std::cout << std::left << std::setw(5) << "HP: ";
-	std::cout << std::left << std::setw(15) << HP;
-	if (init < 0)
+	std::cout << std::left << std::setw(6) << "CHP: ";
+	std::cout << std::left << std::setw(15) << MyCurrentHP;
+	if (MyInit < 0)
 	{
-		std::cout << std::left << std::setw(15) << "Initiative: " << std::left << std::setw(20) << init << std::endl;
+		std::cout << std::left << std::setw(15) << "Initiative: " << std::left << std::setw(20) << MyInit << std::endl;
 	}
-	else std::cout << std::left << std::setw(15) << "Initiative: " << "+" << std::left << std::setw(20) << init << std::endl;
+	else std::cout << std::left << std::setw(15) << "Initiative: " << "+" << std::left << std::setw(20) << MyInit << std::endl;
 
 
 	std::cout << std::left << std::setw(5) << "CON: " << std::left << std::setw(4) << MyCON;
@@ -197,26 +295,26 @@ void Character::PrintCharacterSheet()
 		std::cout << std::left << std::setw(1) << "(+" << MyCONMod << std::left << std::setw(10) << ")";
 	}
 
-	std::cout << std::left << std::setw(5) << "AC: ";
-	std::cout << std::left << std::setw(15) << AC;
-	if (toHit < 0)
+	std::cout << std::left << std::setw(6) << "AC: ";
+	std::cout << std::left << std::setw(15) << MyAC;
+	if (MyToHit < 0)
 	{
-		std::cout << std::left << std::setw(15) << "ToHit: " << std::left << std::setw(15) << toHit << std::endl;
+		std::cout << std::left << std::setw(15) << "ToHit: " << std::left << std::setw(15) << MyToHit << std::endl;
 	}
-	else std::cout << std::left << std::setw(15) << "ToHit: " << "+" << std::left << std::setw(20) << toHit << std::endl;
+	else std::cout << std::left << std::setw(15) << "ToHit: " << "+" << std::left << std::setw(20) << MyToHit << std::endl;
 
-	std::cout << std::left << std::setw(5) << "INT: " << std::left << std::setw(4) << INT;
+	std::cout << std::left << std::setw(5) << "INT: " << std::left << std::setw(4) << MyINT;
 	if (MyINTMod < 0)
 	{
-		std::cout << std::left << std::setw(1) << "(" << MyINTMod << std::left << std::setw(30) << ")";
+		std::cout << std::left << std::setw(1) << "(" << MyINTMod << std::left << std::setw(31) << ")";
 	}
-	else std::cout << std::left << std::setw(1) << "(+" << MyINTMod << std::left << std::setw(30) << ")";
+	else std::cout << std::left << std::setw(1) << "(+" << MyINTMod << std::left << std::setw(31) << ")";
 
-	if (dam < 0)
+	if (MyBaseDamage < 0)
 	{
-		std::cout << std::left << std::setw(15) << "Damage: " << std::left << std::setw(10) << dam << std::endl;
+		std::cout << std::left << std::setw(15) << "Base Damage: " << std::left << std::setw(10) << MyBaseDamage << std::endl;
 	}
-	else std::cout << std::left << std::setw(15) << "Damage: " << "+" << std::left << std::setw(10) << dam << std::endl;
+	else std::cout << std::left << std::setw(15) << "Base Damage: " << "+" << std::left << std::setw(10) << MyBaseDamage << std::endl;
 
 	std::cout << std::left << std::setw(5) << "WIS: " << std::left << std::setw(4) << MyWIS;
 	if (MyWISMod < 0)
@@ -262,11 +360,32 @@ void Character::GenerateStatMods()
 
 void Character::GenerateRaceStatMods()
 {
-	if (MyRace == "Dragon")
+	if (MyRace == "Dragon Cat")
 	{
-		GetDragonRaceMods();
-
+		return GetDrazenRaceMods();
 	}
+	else if (MyRace == "Dragon")
+	{
+		return GetDragonRaceMods();
+	}
+	else if (MyRace == "Human")
+	{
+		return GetHumanRaceMods();
+	}
+	else if (MyRace == "Gigantic Fly")
+	{
+		return GetGiganticFlyRaceMods();
+	}
+	else if (MyRace == "Goblin")
+	{
+		return GetGoblinRaceMods();
+	}
+	else if (MyRace == "Orc")
+	{
+		return GetOrcRaceMods();
+	}
+	else
+		return GetAllOtherRaceMods();
 }
 
 std::string Character::CreateFullName()
@@ -307,7 +426,50 @@ std::string Character::CreateIntroduction()
 	return MyIntroduction;
 }
 
-int Character::GenerateStartingHP()
+void Character::GenerateStartingHP()
 {
-	return MyTotalHP = GetBaseHPDie() + MyCONMod;
+	MyTotalHP = GetBaseHPDie() + MyCONMod;
+	MyCurrentHP = MyTotalHP;
+	return;
+}
+
+int Character::GetMyTotalHP()
+{
+	return MyTotalHP;
+}
+
+void Character::FinishStats()
+{
+	MyAC = (MyDEXMod + 10);
+	MyToHit = ((MySTRMod + MyDEXMod) / 2);
+	MyInit = ((MyINTMod));
+	MyBaseDamage = (MySTRMod);
+	return;
+}
+
+int Character::ResetMyInitiative()
+{
+	return MyInitiative = 0;
+}
+
+int Character::GetMyInitiative()
+{
+	return MyInitiative = ((rand() % 19) + 1) + MyInit;
+}
+
+int Character::MyInitiativeValue()
+{
+	return MyInitiative;
+}
+
+void Character::PrintMyInitiative()
+{
+	C.Green();
+	std::cout << MyFullName << "'s ";
+	C.Yellow();
+	std::cout << " initiative is ";
+	C.Cyan();
+	std::cout << MyInitiative << std::endl;
+	C.Green();
+	return;
 }

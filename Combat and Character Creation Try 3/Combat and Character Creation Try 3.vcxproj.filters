@@ -24,10 +24,16 @@
     <ClCompile Include="FCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextWrap.cpp">
+    <ClCompile Include="TextColors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextColors.cpp">
+    <ClCompile Include="TextWrapAndCAPS.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Races.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyScraper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +44,16 @@
     <ClInclude Include="FCharacter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextWrap.h">
+    <ClInclude Include="TextColors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextColors.h">
+    <ClInclude Include="TextWrapAndCAPS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Races.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyScraper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,8 +9,9 @@ public:
 	FILESGame();
 	~FILESGame();
 	void Reset();	
-	void CreatePlayerCharacter(Character Player);
-	void CreateNPCCharacter(Character NPC);
+	void CreatePlayerCharacter();
+	void CreateNPCCharacter();
+	Character Player;
 	std::vector <Character> Characters;
 	int GetNumberOfNPCs();
 	void GenerateNPCs();
@@ -19,9 +20,9 @@ public:
 	bool IsGameWon();
 	int GetToHIt();
 	int GetDamage();
-	int GetInitiative();
 	bool AskToPlay();
 	bool AskToRollAgain();
+	void Combat();
 	bool AskToKeepPlaying();
 	bool AskToPlayAgain();
 
@@ -29,5 +30,8 @@ public:
 private:
 
 	std::string MyCharacterClassName = "";
+	int NumberOfNPCs = 0;
 };
+
+
 

@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <algorithm>
 #include <vector>
+#include <iterator>
 #include "FILESGame.h"
 
 
@@ -27,13 +28,15 @@ void FILESGame::Reset()
 
 
 
-void FILESGame::CreatePlayerCharacter(Character Player)
+void FILESGame::CreatePlayerCharacter()
 {
 	Player.CreateFirstName();
-	//Player.RollStats();
-	//std::cout << std::endl;
-	Player.PrintCharacterSheet();
-	
+	Player.CreateLastName();
+	Player.CreateFullName();
+	Player.EnterRace();
+	Player.CreateTitle();
+	Player.CreateDesig();
+	Player.CreateIntroduction();
 	bool bRollAgain = false;
 	do
 	{
@@ -44,11 +47,16 @@ void FILESGame::CreatePlayerCharacter(Character Player)
 		bRollAgain = AskToRollAgain();
 	} while (bRollAgain == false);
 	Player.GenerateStatMods();
-	
+	Player.GenerateRaceStatMods();
+	Player.ApplyRaceStatMods();
+	Player.GenerateStatMods();
+	Player.GenerateStartingHP();
+	Player.FinishStats();
+	Player.PrintCharacterSheet();
 	return;
 }
 
-void FILESGame::CreateNPCCharacter(Character NPC)
+void FILESGame::CreateNPCCharacter()
 {
 	return;
 }
@@ -68,7 +76,6 @@ void FILESGame::GenerateNPCs()
 	///*
 	{
 		Characters[i].GenerateRace();
-		std::cout << i << ". Is a: " << Characters[i].GetRace() << ", Named: ";
 		if (Characters[i].GetRace() == "Human")
 		{
 			Characters[i].GenerateNPCName("HumanFirstNames.txt");
@@ -89,7 +96,13 @@ void FILESGame::GenerateNPCs()
 		{
 			Characters[i].GenerateNPCName("DragonNames.txt");
 		}
-		std::cout << Characters[i].GetName() << std::endl;
+		Characters[i].RollStats();
+		Characters[i].GenerateRaceStatMods();
+		Characters[i].ApplyRaceStatMods();
+		Characters[i].GenerateStatMods();
+		Characters[i].GenerateStartingHP();
+		Characters[i].FinishStats();
+		Characters[i].PrintCharacterSheet();
 	}
 	//*/
 	return;
@@ -124,6 +137,42 @@ bool FILESGame::AskToRollAgain()
 	std::cout << "Do you want to keep these stats, yes or no? ";
 	return AskToPlay();
 }
+
+void FILESGame::Combat()
+{
+	int NPCs = Characters.size();
+	std::cout << "NPC #: " << NPCs << std::endl;
+	if (NPCs > 0)
+	{
+		std::vector <Character> Fighters;
+		Player.ResetMyInitiative();
+		Player.GetMyInitiative();
+		Player.PrintMyInitiative();
+		Fighters.push_back(Player);
+		for (int i = 0; i < NPCs; i++)
+		{
+			Characters[i].ResetMyInitiative();
+			Characters[i].GetMyInitiative();
+			Characters[i].PrintMyInitiative();
+			Fighters.push_back(Characters[i]);
+		}
+		for (int i = 0; i < Fighters.size(); i++)
+		{
+			std::cout << Fighters[i].GetFullName() <<
+				"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
+		}
+		//std::sort(Characters.begin(), Characters.end(), CompareInitiatives());
+		for (int i = 0; i < Fighters.size(); i++)
+		{
+			std::cout << Fighters[i].GetFullName() <<
+				"'s Initiative is " << Fighters[i].MyInitiativeValue() << std::endl;
+		}
+		return;
+	}
+	else
+	return;
+}
+
 
 bool FILESGame::AskToKeepPlaying()
 {

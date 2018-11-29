@@ -4,12 +4,15 @@ class Races
 public:
 	Races();
 	~Races();
+	void ResetRaceMods();
+	void GetDrazenRaceMods();
 	void GetDragonRaceMods();
 	void GetGiganticFlyRaceMods();
 	void GetGoblinRaceMods();
 	void GetHumanRaceMods();
 	void GetOrcRaceMods();
-	void RandomStatSelector(int Mod);
+	void GetAllOtherRaceMods();
+	int RandomStatSelector(int Mod);
 	void PrintRaceStatMods();
 	int GetSTRRaceMod();
 	int GetDEXRaceMod();
@@ -18,6 +21,7 @@ public:
 	int GetWISRaceMod();
 	int GetCHARaceMod();
 	int GetBaseHPDie();
+
 private:
 
 	int STRRaceMod = 0;

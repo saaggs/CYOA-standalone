@@ -8,6 +8,7 @@
 #include <vector>
 #include "FILESGame.h"
 #include "TextColors.h"
+#include "SkyScraper.h"
 
 void Clean();
 void PlayIntro();
@@ -15,10 +16,23 @@ void PlayGame();
 
 FILESGame ILESGame;
 TextColors Color;
-TextWrapAndCAPS TWC;
+//TextWrapAndCAPS TWC;
 
 int main()
 {
+	/*
+	std::vector<Skyscraper> skyscrapers;
+	skyscrapers.push_back(Skyscraper("Empire State", 381));
+	skyscrapers.push_back(Skyscraper("Petronas", 452));
+	skyscrapers.push_back(Skyscraper("Burj Khalifa", 828));
+	skyscrapers.push_back(Skyscraper("Taipei", 509));
+
+	std::sort(skyscrapers.begin(), skyscrapers.end());
+	for (unsigned int i = 0; i < skyscrapers.size(); i++)
+		skyscrapers.at(i).print();
+	
+	Clean();
+	*/
 	srand(time(NULL));
 	bool bPlayAgain = false;
 	do
@@ -27,7 +41,8 @@ int main()
 		PlayGame();
 		bPlayAgain = ILESGame.AskToPlayAgain();
 	} while (bPlayAgain == true);
-
+	
+	//Clean();
 	std::cout << std::endl;
 	return 0;
 }
@@ -84,8 +99,8 @@ void PlayIntro()
 
 void PlayGame()
 {
-	Character Player;
-	ILESGame.CreatePlayerCharacter(Player);
+	//Character Player;
+	ILESGame.CreatePlayerCharacter();
 	Clean();
 
 	bool bKeepPlaying = false;
@@ -94,6 +109,7 @@ void PlayGame()
 		system("CLS");
 		ILESGame.GenerateNPCs();
 		Clean();
+		ILESGame.Combat();
 		bKeepPlaying = ILESGame.AskToKeepPlaying();
 	} while (bKeepPlaying == true);
 	Clean();
