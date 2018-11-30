@@ -493,3 +493,13 @@ void Character::TakeDamage(int Damage)
 {
 	MyCurrentHP = (MyCurrentHP - Damage);
 }
+
+bool Character::IsDead()
+{
+	if (MyCurrentHP <= 0)
+	{
+		return true;
+	}
+	else
+	return false;
+}

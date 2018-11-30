@@ -52,6 +52,7 @@ public:
 	int GetMyAC();
 	int GetMyBaseDamage();
 	void TakeDamage(int Damage);
+	bool IsDead();
 
 private:
 
@@ -82,4 +83,5 @@ private:
 	int MyInitiative = 0;
 	int MyToHit = 0;
 	int MyBaseDamage = 0;
+	bool AmIDead = false;
 };

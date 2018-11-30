@@ -19,13 +19,17 @@ public:
 	bool IsCharacterDead();
 	bool IsGameWon();
 	int GetToHIt();
-	int GetDamage();
 	bool AskToPlay();
 	bool AskToRollAgain();
 	void Combat();
 	bool AskToKeepPlaying();
 	bool AskToPlayAgain();
+	void Sort(std::vector<Character> Fighters);
 	void PrintFightOrder(std::vector<Character> Fighters);
+	void Hit();
+	void Miss(Character Defender);
+	void Attack(Character Attacker, Character Defender);
+	void DoDamage(Character Attacker, Character Defender, int DamageDie);
 
 private:
 

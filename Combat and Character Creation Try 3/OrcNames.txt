@@ -5,6 +5,6 @@ BoneCrusher
 FeldNght
 Gag
 GrogThrasher
-LegBighter
+LegBiter
 MarrowCrush
 MoonBeastr
