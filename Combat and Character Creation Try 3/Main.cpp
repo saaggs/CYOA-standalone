@@ -10,12 +10,12 @@
 #include "TextColors.h"
 #include "SkyScraper.h"
 
-void Clean();
+//void Clean();
 void PlayIntro();
 void PlayGame();
 
 FILESGame ILESGame;
-TextColors Color;
+//TextColors Color;
 //TextWrapAndCAPS TWC;
 
 int main()
@@ -44,13 +44,13 @@ int main()
 	} while (bPlayAgain == true);
 	
 
-	Clean();
+	ILESGame.Clean();
 	std::cout << std::endl;
 	return 0;
 }
 
 
-
+/*
 void Clean()
 {
 	Color.Green();
@@ -59,7 +59,7 @@ void Clean()
 	system("CLS");
 	std::cout << std::endl;
 }
-
+*/
 
 
 void PlayIntro()
@@ -94,7 +94,7 @@ void PlayIntro()
 	std::cout << "    %%%%%%%%%%%%%   %%%%%%%%%%%%%  %%%%%%%%%%%%%  %%%%%%%%%%%%%    " << std::endl;
 	std::cout << std::endl << std::endl << std::endl;
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-	Clean();
+	ILESGame.Clean();
 	return;
 }
 
@@ -103,17 +103,17 @@ void PlayGame()
 {
 	//Character Player;
 	ILESGame.CreatePlayerCharacter();
-	Clean();
+	ILESGame.Clean();
 
 	bool bKeepPlaying = false;
 	do
 	{
 		system("CLS");
 		ILESGame.GenerateNPCs();
-		Clean();
+		ILESGame.Clean();
 		ILESGame.Combat();
 		bKeepPlaying = ILESGame.AskToKeepPlaying();
 	} while (bKeepPlaying == true);
-	Clean();
+	ILESGame.Clean();
 	return;
 }

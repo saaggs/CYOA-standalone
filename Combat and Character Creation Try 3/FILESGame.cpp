@@ -9,8 +9,13 @@
 #include <vector>
 #include <iterator>
 #include <stdexcept>
+#include <cmath>
+#include <cstdio>
 #include "FILESGame.h"
+#include "TextColors.h"
 
+
+TextColors Color;
 
 FILESGame::FILESGame()
 {
@@ -25,6 +30,15 @@ FILESGame::~FILESGame()
 void FILESGame::Reset()
 {
 	return;
+}
+
+void FILESGame::Clean()
+{
+	Color.Green();
+	std::cout << std::endl;
+	system("PAUSE");
+	system("CLS");
+	std::cout << std::endl;
 }
 
 
@@ -72,6 +86,7 @@ int FILESGame::GetNumberOfNPCs()
 
 void FILESGame::GenerateNPCs()
 {
+	Characters.resize(0);
 	int NPCs = GetNumberOfNPCs();
 	Characters.resize(NPCs);
 	for (int i = 0; i < NPCs; i++)
@@ -151,83 +166,122 @@ void FILESGame::Combat()
 	if (NPCs > 0)
 	{
 		std::vector <Character> Fighters;
+		Fighters.erase(Fighters.begin(), Fighters.end());
 		Fighters.resize(0);
 		Player.ResetMyInitiative();
 		Player.GetMyInitiative();
 		Player.PrintMyInitiative();
 		Fighters.push_back(Player);
-		for (int i = 0; i < NPCs; i++)
+		for (Character Fighter : Characters)
 		{
-			Characters[i].ResetMyInitiative();
-			Characters[i].GetMyInitiative();
-			Characters[i].PrintMyInitiative();
-			Fighters.push_back(Characters[i]);
+			Fighter.ResetMyInitiative();
+			Fighter.GetMyInitiative();
+			Fighter.PrintMyInitiative();
+			Fighters.push_back(Fighter);
 		}
 		std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
 		{
 			return a.MyInitiativeValue() > b.MyInitiativeValue();
 		});
 		PrintFightOrder(Fighters);
-		for (Character Fighter : Fighters)
+
+		int Count = 0;
+		do
 		{
-			if (Fighter.GetFullName() == Player.GetFullName())
+			//std::cout << "Count = " << Count << std::endl;
+			if (Count == Fighters.size() - 1 && Fighters[Count].GetFullName() == Player.GetFullName())
 			{
-				Attack(Player, Characters[0]);
+				Count = 0;
 			}
-			else
-				Attack(Fighter, Player);
-		}
-		/*
-		if (Fighters[2].GetFullName() == Player.GetFullName())
-		{
-			Attack(Fighters[0], Fighters[2]);
-			Attack(Fighters[1], Fighters[2]);
-			Attack(Fighters[2], Fighters[0]);
-			
-			int AttackRoll = (((rand() % 19) + 1) + Fighters[0].GetMyToHit());
-			std::cout << Fighters[0].GetFullName() << " rolls a " << AttackRoll << " and ";
-			if (AttackRoll > Fighters[2].GetMyAC())
+			for (int i = Count; i < Fighters.size(); i++)
 			{
-				DoDamage(Fighters[0], Fighters[2]);
+				Count = i;
+				if (Fighters[i].GetFullName() == Player.GetFullName())
+				{
+					if (Fighters[Fighters.size() - 1].GetFullName() != Player.GetFullName())
+					{
+						DamageCount = 0;
+						Attack(Fighters[i], Fighters[Fighters.size() - 1]);
+						Fighters[Fighters.size() - 1].CheckIfDead();
+						if (Fighters[Fighters.size() - 1].CheckIfDead() == true)
+						{
+							Fighters.pop_back();
+							if (Count == Fighters.size() - 1)
+							{
+								//std::cout << Player.GetFullName() << " Survived!!" << std::endl;
+								Count = 0;
+							}
+							else
+							{
+								//std::cout << Player.GetFullName() << " Died and will have to try again... " << std::endl;
+								//std::cout << "The Count is starts at " << Count << std::endl;
+								//std::cout << "The value of i is " << i << std::endl;
+								Count++;
+								//std::cout << "The Count is now at " << Count << std::endl;
+							}
+							break;
+						}
+					}
+					else
+					{
+						DamageCount = 0;
+						Attack(Fighters[i], Fighters[0]);
+						//Fighters[0].CheckIfDead();
+						if (Fighters[0].CheckIfDead() == true)
+						{
+							Fighters.erase(Fighters.begin());
+							Count = 0;
+							break;
+						}
+					}
+				}
+				else
+				{
+					for (Character Defender : Fighters)
+					{
+						if (Defender.GetFullName() == Player.GetFullName() && Fighters[i].GetFullName() != "")
+						{
+							//std::cout << "DamageCount is " << DamageCount << std::endl;
+							DamageCount = 0;
+							//std::cout << "After Reset DamageCount is " << DamageCount << std::endl;
+							Attack(Fighters[i], Player);
+							if (Count == Fighters.size() - 1)
+							{
+								Count = 0;
+							}
+							Defender.CheckIfDead();
+							break;
+						}
+					}
+					if (Player.CheckIfDead() == true)
+					{
+						break;
+					}
+				}
 			}
-			else
-				Miss(Fighters[2]);
-			
-		}
-		else
-		{
-			Attack(Fighters[0], Fighters[1]);
-			
-			int AttackRoll = (((rand() % 19) + 1) + Fighters[0].GetMyToHit());
-			std::cout << Fighters[0].GetFullName() << " rolls a " << AttackRoll << " and ";
-			if (AttackRoll > Fighters[1].GetMyAC())
-			{
-				DoDamage(Fighters[0], Fighters[1]);
-				
-				int Damage = (((rand() % 19) + 1) + Fighters[0].GetMyBaseDamage());
-				Player.TakeDamage(Damage);
-				std::cout << "HITS " << Player.GetFullName() << " for " << Damage << " points of damage!" <<
-					std::endl;
-				
-			}
-			else
-				Miss(Fighters[1]);
-				//std::cout << "misses " << Player.GetFullName() << std::endl;
-					
-		}
-		*/
-		//std::cout << "Fighter "
+			PrintFightersStats(Fighters);
+			Clean();
+		} while (Player.CheckIfDead() == false && Fighters.size() > 1);
 		return;
 	}
 	else
-	return;
+	{
+		return;
+	}
 }
 
 
 bool FILESGame::AskToKeepPlaying()
 {
-	std::cout << "Do you want to keep going, yes or no? ";
-	return AskToPlay();
+	if (Player.CheckIfDead() == true)
+	{
+		return false;
+	}
+	else
+	{
+		std::cout << "Do you want to keep going, yes or no? ";
+		return AskToPlay();
+	}
 }
 
 bool FILESGame::AskToPlayAgain()
@@ -256,48 +310,113 @@ void FILESGame::Miss(Character Defender)
 	return;
 }
 
-void FILESGame::Attack(Character Attacker, Character Defender)
+void FILESGame::Attack(Character &Attacker, Character &Defender)
 {
-	int AttackRoll = (((rand() % 19) + 1) + Attacker.GetMyToHit());
-	std::cout << Attacker.GetFullName() << "'s " << AttackRoll;
-	if (AttackRoll > Defender.GetMyAC())
-	{
-		if (Attacker.GetRace() == "Dragon")
-			DoDamage(Attacker, Defender, 6);
-		if (Attacker.GetRace() == "Dragon Cat")
-			DoDamage(Attacker, Defender, 6);
-		else if (Attacker.GetRace() == "Gigantic Fly")
-			DoDamage(Attacker, Defender, 3);
-		else if (Attacker.GetRace() == "Goblin")
-			DoDamage(Attacker, Defender, 4);
-		else if (Attacker.GetRace() == "Human")
-			DoDamage(Attacker, Defender, 4);
-		else if (Attacker.GetRace() == "Orc")
-			DoDamage(Attacker, Defender, 4);
+	//if (Attacker.CheckIfDead() == false)
+	//{
+		int AttackRoll = (((rand() % 19) + 1) + Attacker.GetMyToHit());
+		std::cout << Attacker.GetFullName() << "'s " << AttackRoll;
+		if (AttackRoll > Defender.GetMyAC())
+		{
+			if (Attacker.GetRace() == "Dragon")
+				DoDamage(Attacker, Defender, 6);
+			if (Attacker.GetRace() == "Dragon Cat")
+				DoDamage(Attacker, Defender, 6);
+			else if (Attacker.GetRace() == "Gigantic Fly")
+				DoDamage(Attacker, Defender, 4);
+			else if (Attacker.GetRace() == "Goblin")
+				DoDamage(Attacker, Defender, 4);
+			else if (Attacker.GetRace() == "Human")
+				DoDamage(Attacker, Defender, 4);
+			else if (Attacker.GetRace() == "Orc")
+				DoDamage(Attacker, Defender, 4);
+			else
+				DoDamage(Attacker, Defender, 4);
+		}
 		else
-			DoDamage(Attacker, Defender, 4);
+			Miss(Defender);
+	//}
+	//else if (Attacker.CheckIfDead() == true)
+	//{
+		//std::cout << Attacker.GetFullName() << " is DEAD!" << std::endl;
+	//}
+	//	return;
+}
+
+void FILESGame::DoDamage(Character &Attacker, Character &Defender, int DamageDie)
+{
+	//std::cout << " DamageCount is " << DamageCount << " ";
+	
+	if (DamageCount == 0)
+	{
+		int Damage = (((rand() % (DamageDie - 1) + 1) + Attacker.GetMyBaseDamage()));
+		if (Damage < 0)
+		{
+			Damage = 0;
+		}
+
+		Defender.TakeDamage(Damage);
+
+		std::cout << " HITS " << Defender.GetFullName() <<
+			" for " << Damage << " points of damage!" << std::endl;
+		DamageCount++;
+
+		Defender.CheckIfDead();
+
+		return;
 	}
 	else
-		Miss(Defender);
+		return;
 }
 
-void FILESGame::DoDamage(Character Attacker, Character Defender, int DamageDie)
+void FILESGame::PrintFightersStats(std::vector<Character> &Fighters)
 {
-	int Damage = (((rand() % (DamageDie - 1) + 1) + Attacker.GetMyBaseDamage()));
-	Defender.TakeDamage(Damage);
-	std::cout << " HITS " << Defender.GetFullName() <<
-		" for " << Damage << " points of damage!" << std::endl;
-	return;
+	Color.Yellow();
+		std::cout << std::left << std::setw(15) <<
+			Player.GetFullName() << " HP: " << Player.GetMyCurrentHP() <<
+			"/" << std::left <<
+			std::setw(15) << Player.GetMyTotalHP();
+		
+		for (Character Fighter : Fighters)
+		{
+			if (Fighter.GetFullName() != Player.GetFullName())
+			{
+				std::cout << std::left << std::setw(15) <<
+					Fighter.GetFullName() << " HP: " << Fighter.GetMyCurrentHP() <<
+					"/" << std::left <<
+					std::setw(15) << Fighter.GetMyTotalHP();
+			}
+		}
+	std::cout << std::endl;
+	Color.Green();
 }
 
-
-/*
-void SortFightOrder(std::vector<Character> Fighters)
+void FILESGame::WhoseWho(std::vector<Character> Fighters, std::vector<Character> Characters)
 {
-	std::sort(Fighters.begin(), Fighters.end(), [](Character a, Character b)
+	for (int i = 0; i < Fighters.size(); i++)
 	{
-		return a.MyInitiativeValue() > b.MyInitiativeValue();
-	});
-	return;
+		std::cout << "Fighters Vector " << " is " << Fighters.size() << " big " <<
+			"and Fighter " << i << "'s name is " << Fighters[i].GetFullName() << std::endl;
+	}
+	std::cout << "Fighters size is " << Fighters.size() << std::endl;
+	std::cout << "Characters size is " << Characters.size() << std::endl;
+	for (int i = 0; i < Fighters.size(); i++)
+	{
+		if (Fighters[i].GetFullName() == "")
+		{
+			std::cout << "I'm the GHOST! Fighter " << i << std::endl;
+		}
+		else
+			std::cout << "Fighter " << i << " is " << Fighters[i].GetFullName() << std::endl;
+	}
+	for (int i = 0; i < Characters.size(); i++)
+	{
+		if (Characters[i].GetFullName() == "")
+		{
+			std::cout << "I'm the GHOST! Character " << i << std::endl;
+		}
+		else
+			std::cout << "Character " << i << " is " << Characters[i].GetFullName() << std::endl;
+	}
 }
-*/
+

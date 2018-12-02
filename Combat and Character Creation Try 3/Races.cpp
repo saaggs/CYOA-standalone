@@ -32,7 +32,11 @@ void Races::GetDrazenRaceMods()
 	ResetRaceMods();
 	RandomStatSelector(2);
 	RandomStatSelector(2);
-	BaseHPDie = 10;
+	STRRaceMod = 6;
+	DEXRaceMod = 6;
+	CONRaceMod = 8;
+	INTRaceMod = 6;
+	BaseHPDie = 15;
 	return;
 }
 

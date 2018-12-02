@@ -13,6 +13,8 @@
 #include "TextColors.h"
 #include "Races.h"
 
+
+
 class Character: public Races 
 {
 public:
@@ -43,6 +45,7 @@ public:
 	void GenerateRaceStatMods();
 	void GenerateStartingHP();
 	int GetMyTotalHP();
+	int GetMyCurrentHP();
 	void FinishStats();
 	int ResetMyInitiative();
 	int GetMyInitiative();
@@ -52,7 +55,7 @@ public:
 	int GetMyAC();
 	int GetMyBaseDamage();
 	void TakeDamage(int Damage);
-	bool IsDead();
+	bool CheckIfDead();
 
 private:
 

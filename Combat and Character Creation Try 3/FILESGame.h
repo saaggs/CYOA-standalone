@@ -9,6 +9,7 @@ public:
 	FILESGame();
 	~FILESGame();
 	void Reset();	
+	void Clean();
 	void CreatePlayerCharacter();
 	void CreateNPCCharacter();
 	Character Player;
@@ -28,14 +29,17 @@ public:
 	void PrintFightOrder(std::vector<Character> Fighters);
 	void Hit();
 	void Miss(Character Defender);
-	void Attack(Character Attacker, Character Defender);
-	void DoDamage(Character Attacker, Character Defender, int DamageDie);
+	void Attack(Character &Attacker, Character &Defender);
+	void DoDamage(Character &Attacker, Character &Defender, int DamageDie);
+	void PrintFightersStats(std::vector<Character> &Fighters);
+	void PrintVector();
+	void WhoseWho(std::vector<Character> Fighters, std::vector<Character> Characters);
 
 private:
 
 	std::string MyCharacterClassName = "";
 	int NumberOfNPCs = 0;
-
+	int DamageCount = 0;
 };
 
 

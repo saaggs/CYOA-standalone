@@ -438,6 +438,11 @@ int Character::GetMyTotalHP()
 	return MyTotalHP;
 }
 
+int Character::GetMyCurrentHP()
+{
+	return MyCurrentHP;
+}
+
 void Character::FinishStats()
 {
 	MyAC = (MyDEXMod + 10);
@@ -494,10 +499,17 @@ void Character::TakeDamage(int Damage)
 	MyCurrentHP = (MyCurrentHP - Damage);
 }
 
-bool Character::IsDead()
+bool Character::CheckIfDead()
 {
 	if (MyCurrentHP <= 0)
 	{
+		C.Red();
+		std::cout << MyFullName << " IS DEAD !!! \n\n";
+		/*
+		std::cout << MyFullName << " IS DEAD !!! \n\n";
+		std::cout << MyFullName << " IS DEAD !!! \n\n";
+		*/
+		C.Green();
 		return true;
 	}
 	else
