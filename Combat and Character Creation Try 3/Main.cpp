@@ -111,7 +111,8 @@ void PlayGame()
 		system("CLS");
 		ILESGame.GenerateNPCs();
 		ILESGame.Clean();
-		ILESGame.Combat();
+		ILESGame.Story();  //TODO Story Line, with hopefully add combat.
+		//ILESGame.Combat();
 		bKeepPlaying = ILESGame.AskToKeepPlaying();
 	} while (bKeepPlaying == true);
 	ILESGame.Clean();

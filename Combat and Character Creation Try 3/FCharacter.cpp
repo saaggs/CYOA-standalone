@@ -499,6 +499,16 @@ void Character::TakeDamage(int Damage)
 	MyCurrentHP = (MyCurrentHP - Damage);
 }
 
+bool Character::CheckIfArmorEquipped()
+{
+	return ArmorEquipped;
+}
+
+bool Character::CheckIfWeaponEquipped()
+{
+	return WeaponEquipped;
+}
+
 bool Character::CheckIfDead()
 {
 	if (MyCurrentHP <= 0)

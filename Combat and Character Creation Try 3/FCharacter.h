@@ -15,7 +15,7 @@
 
 
 
-class Character: public Races 
+class Character: public Races
 {
 public:
 	Character();
@@ -55,6 +55,8 @@ public:
 	int GetMyAC();
 	int GetMyBaseDamage();
 	void TakeDamage(int Damage);
+	bool CheckIfArmorEquipped();
+	bool CheckIfWeaponEquipped();
 	bool CheckIfDead();
 
 private:
@@ -86,5 +88,7 @@ private:
 	int MyInitiative = 0;
 	int MyToHit = 0;
 	int MyBaseDamage = 0;
+	bool ArmorEquipped = false;
+	bool WeaponEquipped = false;
 	bool AmIDead = false;
 };

@@ -120,21 +120,31 @@
   <ItemGroup>
     <ClCompile Include="FCharacter.cpp" />
     <ClCompile Include="FILESGame.cpp" />
+    <ClCompile Include="FInventory.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PlayerControls.cpp" />
     <ClCompile Include="Races.cpp" />
     <ClCompile Include="SkyScraper.cpp" />
+    <ClCompile Include="Storyline.cpp" />
     <ClCompile Include="TestSortClass.cpp" />
     <ClCompile Include="TextColors.cpp" />
     <ClCompile Include="TextWrapAndCAPS.cpp" />
+    <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FCharacter.h" />
     <ClInclude Include="FILESGame.h" />
+    <ClInclude Include="FInventory.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="PlayerControls.h" />
     <ClInclude Include="Races.h" />
     <ClInclude Include="SkyScraper.h" />
+    <ClInclude Include="Storyline.h" />
     <ClInclude Include="TestSortClass.h" />
     <ClInclude Include="TextColors.h" />
     <ClInclude Include="TextWrapAndCAPS.h" />
+    <ClInclude Include="Weapon.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

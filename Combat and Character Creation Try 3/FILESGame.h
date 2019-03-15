@@ -1,9 +1,11 @@
 #pragma once
 #include "FCharacter.h"
+#include "FInventory.h"
+#include "Storyline.h"
 #include "TextColors.h"
 #include "TextWrapAndCAPS.h"
 
-class FILESGame: public TextColors, public TextWrapAndCAPS
+class FILESGame: public TextColors, public TextWrapAndCAPS, private FInventory
 {
 public:
 	FILESGame();
@@ -13,6 +15,8 @@ public:
 	void CreatePlayerCharacter();
 	void CreateNPCCharacter();
 	Character Player;
+	FInventory PlayerInv;
+	Storyline SectionOne;
 	std::vector <Character> Characters;
 	int GetNumberOfNPCs();
 	void GenerateNPCs();
@@ -34,6 +38,7 @@ public:
 	void PrintFightersStats(std::vector<Character> &Fighters);
 	void PrintVector();
 	void WhoseWho(std::vector<Character> Fighters, std::vector<Character> Characters);
+	void Story();
 
 private:
 

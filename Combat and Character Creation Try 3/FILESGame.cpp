@@ -13,7 +13,7 @@
 #include <cstdio>
 #include "FILESGame.h"
 #include "TextColors.h"
-
+#include "FInventory.h"
 
 TextColors Color;
 
@@ -418,5 +418,10 @@ void FILESGame::WhoseWho(std::vector<Character> Fighters, std::vector<Character>
 		else
 			std::cout << "Character " << i << " is " << Characters[i].GetFullName() << std::endl;
 	}
+}
+
+void FILESGame::Story()
+{
+	SectionOne.Introduction();
 }
 
