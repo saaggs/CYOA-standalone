@@ -123,6 +123,7 @@
     <ClCompile Include="FInventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Page.cpp" />
     <ClCompile Include="PlayerControls.cpp" />
     <ClCompile Include="Races.cpp" />
     <ClCompile Include="SkyScraper.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="FILESGame.h" />
     <ClInclude Include="FInventory.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="Page.h" />
     <ClInclude Include="PlayerControls.h" />
     <ClInclude Include="Races.h" />
     <ClInclude Include="SkyScraper.h" />

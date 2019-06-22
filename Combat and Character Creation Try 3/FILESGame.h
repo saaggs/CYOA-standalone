@@ -4,6 +4,7 @@
 #include "Storyline.h"
 #include "TextColors.h"
 #include "TextWrapAndCAPS.h"
+#include "Page.h"
 
 class FILESGame: public TextColors, public TextWrapAndCAPS, private FInventory
 {
@@ -17,6 +18,7 @@ public:
 	Character Player;
 	FInventory PlayerInv;
 	Storyline SectionOne;
+	Page Pge;
 	std::vector <Character> Characters;
 	int GetNumberOfNPCs();
 	void GenerateNPCs();

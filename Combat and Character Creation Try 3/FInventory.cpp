@@ -24,11 +24,12 @@ void FInventory::CheckInventory()
 	Co.DarkYellow();
 	std::cout << "\nYour inventory: \n";
 	CheckMoney();
+	Co.DarkYellow();
 	for(auto Element : Inventory)
 	{
 		Element.PrintSkinny();
 	}
-	std::cout << std::endl << std::endl;
+	std::cout << std::endl;
 	return;
 }
 
@@ -104,7 +105,7 @@ int FInventory::GetCopper(int num)
 
 int FInventory::CheckMoney()
 {
-	Co.DarkYellow();
+	Co.Yellow();
 	std::cout << std::endl << std::left << std::setw(15) << "Gold: " << Gold << std::endl << std::endl;
 	//std::cout << std::left << std::setw(15) << "silver: " << Silver << std::endl;
 	//std::cout << std::left << std::setw(15) << "Copper: " << Copper << std::endl;

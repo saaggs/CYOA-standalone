@@ -14,6 +14,7 @@
 #include "FILESGame.h"
 #include "TextColors.h"
 #include "FInventory.h"
+//#include "Page.h"
 
 TextColors Color;
 
@@ -422,6 +423,8 @@ void FILESGame::WhoseWho(std::vector<Character> Fighters, std::vector<Character>
 
 void FILESGame::Story()
 {
-	SectionOne.Introduction();
+	//GetRmInv.size currently returns zero.  Function in Storyline.cpp isn't working.  Trying to transfer RmInv vector to 
+	//RoomInv vector.  need that to happen in order to not have to create page inventory in Storyline.cpp 
+	SectionOne.ActionsAndScenes();
 }
 

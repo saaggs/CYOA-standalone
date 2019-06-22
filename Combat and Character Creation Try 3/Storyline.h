@@ -8,8 +8,9 @@ class Storyline
 public:
 	Storyline();
 	~Storyline();
-	void Introduction();
+	void ActionsAndScenes();
 	void PlayerTakeItem(std::string Command);
+	void PlayerDropItem(std::string Command);
 	void PlayerCommandEffect();
 
 private:

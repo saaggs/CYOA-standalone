@@ -8,6 +8,7 @@
 #include "FILESGame.h"
 #include "FInventory.h"
 #include "PlayerControls.h"
+#include "Page.h"
 #include <algorithm>
 
 
@@ -18,6 +19,7 @@ FInventory PlayerInv;
 FInventory RoomInv;
 FILESGame IG;
 PlayerControls PI;
+Page Pg;
 
 Storyline::Storyline()
 {
@@ -28,6 +30,176 @@ Storyline::~Storyline()
 {
 }
 
+void Storyline::ActionsAndScenes()
+{
+	RoomInv.Inventory.resize(0);
+	Pg.Pg("TextFiles\\Intro.txt");
+	for (Item Item : Pg.GetRmInv())
+	{
+		RoomInv.Inventory.push_back(Item);
+	}
+	//RoomInv.CheckInventory();
+	do
+	{
+		Colr.Grey();
+		PI.PlayerInput();
+		PlayerCommandEffect();
+	} while (PI.GetCommand() != "exit");
+	std::cout << "end \n";
+}
+
+void Storyline::PlayerTakeItem(std::string Command)
+{
+	int ItemCount = 0;
+	int OriginalSize = RoomInv.Inventory.size();
+	if (RoomInv.Inventory.size() == 0)
+	{
+		std::cout << "There is nothing here to take. \n";
+		return;
+	}
+	for (Item Item : RoomInv.Inventory)
+	{
+		//	std::cout << "Room Inventory \n";
+		//RoomInv.CheckInventory();
+		//std::cout << "Move loop is running \n";
+		//std::cout << "Item: " << Item.GetName() << "\n";
+
+		if (Item.GetName() == Command)
+		{
+			//std::cout << Command << " found \n";
+			//Colr.Green();
+			//for (Item Item : RoomInv.Inventory)
+			//{
+			//Item.PrintSkinny();
+			//}
+			//std::cout << "\n\n";
+			PlayerInv.Inventory.push_back(std::move(Item));
+			Colr.Green();
+			std::cout << "You take " << Item.GetName();
+			RoomInv.Inventory.erase(RoomInv.Inventory.begin() + ItemCount);
+			break;
+		}
+		ItemCount++;
+	}
+	if (RoomInv.Inventory.size() == OriginalSize)
+	{
+		std::cout << "You cannot find \"" << Command << "\"" << std::endl;
+		return;
+	}
+	else
+	{
+		RoomInv.Inventory.resize(ItemCount);
+	}
+	//else if (RoomInv.Inventory[ItemCount].GetName() == Command)
+	//{
+	//}
+	return;
+}
+
+void Storyline::PlayerDropItem(std::string Command)
+{
+	int ItemCount = 0;
+	int OriginalSize = PlayerInv.Inventory.size();
+	for (Item Item : PlayerInv.Inventory)
+	{
+		//	std::cout << "Room Inventory \n";
+		//RoomInv.CheckInventory();
+		std::cout << "Move loop is running \n";
+		std::cout << "Item: " << Item.GetName() << "\n";
+
+		if (Item.GetName() == Command)
+		{
+			std::cout << Command << " found \n";
+			if (PlayerInv.Inventory.size() == 0)
+			{
+				std::cout << "Your inventory is empty. \n";
+				break;
+			}
+			else
+			{
+				Colr.Green();
+				//for (Item Item : RoomInv.Inventory)
+				//{
+				Item.PrintSkinny();
+				//}
+				std::cout << "\n\n";
+				RoomInv.Inventory.push_back(std::move(Item));
+				std::cout << "You drop " << Item.GetName();
+				PlayerInv.Inventory.erase(PlayerInv.Inventory.begin() + ItemCount);
+				break;
+			}
+		}
+		ItemCount++;
+	}
+	if (PlayerInv.Inventory.size() == OriginalSize)
+	{
+		std::cout << "You do not have the \"" << Command << "\"" << std::endl;
+		return;
+	}
+	//else if (RoomInv.Inventory[ItemCount].GetName() == Command)
+	//{
+	//}
+	return;
+}
+
+void Storyline::PlayerCommandEffect()
+{
+	if (PI.GetCommand().find("take") == 0)
+	{
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		PlayerTakeItem(Command);
+		std::cout << std::endl;
+	}
+	else if (PI.GetCommand().find("inv") == 0)
+	{
+		PlayerInv.CheckInventory();
+	}
+	else if (PI.GetCommand().find("look") == 0)
+	{
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		if (Command == "room")
+		{
+			// look at the room
+			// in order to do this each page or room needs to become it's own class that is called here.  Each room can then have it's own
+			// array of class items, description and can interact with the character by trading items and can be examined as 
+			// such also by commands like looking at specific properties of the room.  Items and weapons contained in a room can thus be 
+			// examined, picked up or dropped.  Story line will be much shorter this way.  Each room will have come from the class room
+			// and can be thier own objects.
+			std::cout << std::endl;
+			Colr.DarkCyan();
+			Caps.outputText(Pg.GetRoomDescription());
+			std::cout << std::endl;
+		}
+		else
+		{
+			std::cout << "You look at the " << Command << std::endl << std::endl;
+		}
+	}
+	else if (PI.GetCommand().find("drop") == 0)
+	{
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		PlayerDropItem(Command);
+		std::cout << std::endl;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 void Storyline::Introduction()
 {
 	RoomInv.Inventory.resize(0);
@@ -83,7 +255,7 @@ void Storyline::Introduction()
 	// Hopefully a player can only move items if they exist.  May need to resize the RoomInv.Inventory to 
 	// make sure copies aren't left in the room inventory.  This will work for NPC inventory as well.
 	// So shops can behave in the same manner added the feature of an economy.  
-	
+
 	// Need to move items from one vector to another rather than take into inventory, so player cannot 
 	// spawn infinite number of items.
 	// This code checks if room inventory is empty, if not it removes the first item from Room vector 
@@ -132,7 +304,7 @@ void Storyline::Introduction()
 		ItemCount++;
 	}
 	RoomInv.Inventory.erase(RoomInv.Inventory.begin() +ItemCount);
-	*/
+	//*\/
 
 	std::cout << "Room inventory skinny: \n";
 	for (Item Item : RoomInv.Inventory)
@@ -150,76 +322,4 @@ void Storyline::Introduction()
 	} while (PI.GetCommand() != "exit");
 	std::cout << "end \n";
 }
-
-void Storyline::PlayerTakeItem(std::string Command)
-{
-	int ItemCount = 0;
-	int OriginalSize = RoomInv.Inventory.size();
-	for (Item Item : RoomInv.Inventory)
-	{
-		//	std::cout << "Room Inventory \n";
-		//RoomInv.CheckInventory();
-		std::cout << "Move loop is running \n";
-		std::cout << "Item: " << Item.GetName() << "\n";
-
-		if (Item.GetName() == Command)
-		{
-			std::cout << Command << " found \n";
-			if (RoomInv.Inventory.size() == 0)
-			{
-				std::cout << "Room Inventory is empty. \n";
-				break;
-			}
-			else
-			{
-				Colr.Green();
-				//for (Item Item : RoomInv.Inventory)
-				//{
-				Item.PrintSkinny();
-				//}
-				std::cout << "\n\n";
-				PlayerInv.Inventory.push_back(std::move(Item));
-				std::cout << "You take " << Item.GetName();
-				RoomInv.Inventory.erase(RoomInv.Inventory.begin() + ItemCount);
-				break;
-			}
-		}
-		ItemCount++;
-	}
-	if (RoomInv.Inventory.size() == OriginalSize)
-	{
-		std::cout << "You cannot find \"" << Command << "\"" << std::endl;
-		return;
-	}
-	//else if (RoomInv.Inventory[ItemCount].GetName() == Command)
-	//{
-	//}
-	return;
-}
-
-void Storyline::PlayerCommandEffect()
-{
-	if (PI.GetCommand().find("take") == 0)
-	{
-		std::string Command = PI.GetCommand();
-		Command = Command.substr(Command.find_first_of(" \t") + 1);
-		PlayerTakeItem(Command);
-		std::cout << std::endl;
-	}
-	else if (PI.GetCommand().find("inv") == 0)
-	{
-		PlayerInv.CheckInventory();
-	}
-	else if (PI.GetCommand().find("look") == 0)
-	{
-		std::string Command = PI.GetCommand();
-		Command = Command.substr(Command.find_first_of(" \t") + 1);
-		std::cout << "You take a look at " << Command << std::endl << std::endl;
-	}
-}
-
-
-
-
-
-
+*/
