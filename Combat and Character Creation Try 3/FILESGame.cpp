@@ -285,6 +285,7 @@ bool FILESGame::AskToKeepPlaying()
 	}
 }
 
+
 bool FILESGame::AskToPlayAgain()
 {
 	std::cout << "Do you want to play again, yes or no? ";

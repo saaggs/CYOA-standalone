@@ -19,6 +19,17 @@ FInventory::~FInventory()
 {
 }
 
+void FInventory::GetInv()
+{
+	Co.DarkYellow();
+	for (auto Element : Inventory)
+	{
+		Element.PrintSkinny();
+	}
+	std::cout << std::endl;
+	return;
+}
+
 void FInventory::CheckInventory()
 {
 	Co.DarkYellow();

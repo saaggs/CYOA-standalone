@@ -11,6 +11,7 @@
 TextWrapAndCAPS Cps;
 TextColors Clr;
 FInventory RmInv;
+Item PgItem;
 //FILESGame IG;
 
 
@@ -46,10 +47,10 @@ void Page::Introduction()
 	Clr.DarkWhite();
 
 	Item BearSkinCloak;
-	BearSkinCloak.CreateItem("Bear Skin Cloak", 2);
+	BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60);
 	RmInv.TakeItem(BearSkinCloak);
 	Item BreadAndCheese;
-	BreadAndCheese.CreateItem("Bread and Cheese", 0.25);
+	BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2);
 	RmInv.TakeItem(BreadAndCheese);
 
 	for (Item Item : RmInv.Inventory)
@@ -80,36 +81,120 @@ std::string Page::GetRoomDescription()
 
 std::string Page::Pg(std::string textfile1, std::string textfile2, std::string textfile3, std::string textfile4)
 {
+	Pages.clear();
 	std::string line_ = "";
 	std::string text = "";
 	std::ifstream file_(textfile1);
 	if (file_.is_open())
 	{
-		std::cout << "File is open!" << std::endl;
+		//std::cout << "File is open!" << std::endl;
+		//Pages.resize(0);
 		while (std::getline(file_, line_))
 		{
 			text = line_;
 			Pages.push_back(text);
+
 		}
 		file_.close();
 	}
-	for (std::string page : Pages)
+	return text;
+}
+
+std::string Page::GetPgInvList(std::string textfile)
+{
+	PageInventoryList.clear();
+	std::string line_ = "";
+	std::string text = "";
+	std::ifstream file_(textfile);
+	if (file_.is_open())
 	{
-		Clr.DarkGreen();
-		Cps.outputText(page);
+		//std::cout << "File is open!" << std::endl;
+		//Pages.resize(0);
+		while (std::getline(file_, line_))
+		{
+			text = line_;
+			PageInventoryList.push_back(text);
+
+		}
+		file_.close();
+	}
+	return text;
+}
+
+void Page::GetPgInv()
+{
+	for (int i = 0; i <= PageInventoryList.size() - 1; i++)
+	{
+		std::string line_ = "";
+		std::string text = "";
+		std::ifstream file_(PageInventoryList[i]);
+		if (file_.is_open())
+		{
+			PageInventoryStats.clear();
+			while (std::getline(file_, line_))
+			{
+				text = line_;
+				PageInventoryStats.push_back(text);
+			}
+			file_.close();
+		}
+		else
+		{
+			std::cout << "File did not open \n\n";
+		}
+		std::string name = PageInventoryStats[0];
+		double weight = std::stod(PageInventoryStats[1]);
+		int value = std::stoi(PageInventoryStats[2]);
+		std::string description = "There is nothing special about this item. \n\n";
+		if (PageInventoryStats[9] != "")
+		{
+			description = PageInventoryStats[9];
+		}
+		PgItem.CreateItem(name, weight, value, description);
+		RmInv.Inventory.push_back(PgItem);
+	}
+	return;
+}
+
+
+
+void Page::PrintPg()
+{
+	Clr.DarkGreen();
+	Cps.outputText(Pages[0]);
+	std::cout << std::endl;
+	std::cout << std::endl;
+	Clr.DarkYellow();
+	for (int i = 0; i <= RmInv.Inventory.size() - 1; i++)
+	{
+		RmInv.Inventory[i].PrintSkinny();
 	}
 	std::cout << std::endl;
-	return text;
+	Clr.DarkCyan();
+	for (int i=10; i < Pages.size(); i+=2)
+	{
+		if (Pages[i] == "")
+		{
+			break;
+		}
+		else
+		{
+			std::cout << std::endl;
+			Cps.outputText(Pages[i]);
+		}
+
+	}
+	std::cout << std::endl;
+	return;
 }
 
 std::string Page::GetPgs()
 {
-
 	std::ifstream("TextFiles\\*.txt");
 	return std::string();
 }
 
-//Modifying this file.
+
 
 
 

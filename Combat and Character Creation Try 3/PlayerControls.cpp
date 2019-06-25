@@ -20,6 +20,7 @@ PlayerControls::~PlayerControls()
 
 std::string PlayerControls::PlayerInput()
 {
+	std::cout << std::endl;
 	CommandString = "";
 	std::cout << ">> ";
 	std::getline(std::cin, CommandString);

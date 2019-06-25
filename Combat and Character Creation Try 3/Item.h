@@ -13,7 +13,7 @@ public:
 	std::string GetName();
 	std::string GetItemDescription();
 	void SetItemDescription(std::string ItemDescr);
-	void CreateItem(std::string ItemName, double weightnum);
+	void CreateItem(std::string ItemName, double weightnum, int value, std::string description = "There is nothing special about this item. \n\n");
 	void PrintItemInfo();
 	void PrintSkinny();
 	bool InInventory();
@@ -24,6 +24,7 @@ private:
 	std::string Name = "";
 	std::string ItemDescription = "There is nothing speacial about this item. \n\n";
 	double Weight = 0.0;
+	int Value = 0;
 	int NumberOf = 0;
 	bool IsInInventory = false;
 };

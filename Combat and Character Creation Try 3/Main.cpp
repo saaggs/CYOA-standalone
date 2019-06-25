@@ -40,7 +40,7 @@ int main()
 	{
 		PlayIntro();
 		PlayGame();
-		bPlayAgain = ILESGame.AskToPlayAgain();
+		bPlayAgain = ILESGame.AskToKeepPlaying();
 	} while (bPlayAgain == true);
 	
 
@@ -105,16 +105,16 @@ void PlayGame()
 	ILESGame.CreatePlayerCharacter();
 	ILESGame.Clean();
 
-	bool bKeepPlaying = false;
-	do
-	{
+	//bool bKeepPlaying = false;
+	//do
+	//{
 		system("CLS");
 		ILESGame.GenerateNPCs();
 		ILESGame.Clean();
 		ILESGame.Story();  //TODO Story Line, with hopefully add combat.
 		//ILESGame.Combat();
-		bKeepPlaying = ILESGame.AskToKeepPlaying();
-	} while (bKeepPlaying == true);
+		//bKeepPlaying = ILESGame.AskToKeepPlaying();
+	//} while (bKeepPlaying == true);
 	ILESGame.Clean();
 	return;
 }

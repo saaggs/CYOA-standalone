@@ -40,10 +40,12 @@ void Item::SetItemDescription(std::string ItemDescr)
 	return;
 }
 
-void Item::CreateItem(std::string ItemName, double weightnum)
+void Item::CreateItem(std::string ItemName, double weightnum, int value, std::string description)
 {
 	Name = ItemName;
 	Weight = weightnum;
+	Value = value;
+	ItemDescription = description;
 	return;
 	//NumberOf = num;
 }
@@ -78,4 +80,5 @@ bool Item::MoveFromPlayerInventory()
 	IsInInventory = false;
 	return IsInInventory;
 }
+
 

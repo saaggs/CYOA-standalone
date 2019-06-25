@@ -1,0 +1,25 @@
+Test1A 		You have managed to stay undetected while the crowd rages. Edging your way along the wall, you make it to the rear of the bar.  There is a trap door that leads beneath the cellar.  There is a door to your leftcand a stairwwell near the back.
+
+
+
+
+
+
+
+
+TextFiles\\Test1A1.txt
+Option One:  Use the door
+TextFiles\\Test1A2.txt
+Option Two:  Open the trap door
+TextFiles\\Test1A3.txt
+Option Three:  Leave the cellar
+TextFiles\\Test1A4.txt
+Option Four:  Head upstairs
+
+
+
+
+
+
+
+none

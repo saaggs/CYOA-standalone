@@ -8,6 +8,7 @@ class FInventory
 public:
 	FInventory();
 	~FInventory();
+	void GetInv();
 	void CheckInventory();
 	//int GetCoin(int coin);
 	int GetGold(int num);

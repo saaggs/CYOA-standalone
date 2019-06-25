@@ -32,20 +32,101 @@ Storyline::~Storyline()
 
 void Storyline::ActionsAndScenes()
 {
-	RoomInv.Inventory.resize(0);
 	Pg.Pg("TextFiles\\Intro.txt");
+	RoomInv.Inventory.resize(0);
+	Pg.GetPgInvList(Pg.Pages[7]);
+	Pg.GetPgInv();
 	for (Item Item : Pg.GetRmInv())
 	{
 		RoomInv.Inventory.push_back(Item);
 	}
 	//RoomInv.CheckInventory();
+	Pg.PrintPg();
 	do
 	{
 		Colr.Grey();
 		PI.PlayerInput();
 		PlayerCommandEffect();
-	} while (PI.GetCommand() != "exit");
-	std::cout << "end \n";
+		if (PI.GetCommand() == "one")
+		{
+			Pg.Pg(Pg.Pages[9]);
+			RoomInv.Inventory.resize(0);
+			Pg.GetPgInvList(Pg.Pages[7]);
+			Pg.GetPgInv();
+			for (Item Item : Pg.GetRmInv())
+			{
+				RoomInv.Inventory.push_back(Item);
+			}
+			RoomInv.CheckInventory();
+			Pg.PrintPg();
+		}
+		else if (PI.GetCommand() == "two")
+		{
+			Pg.Pg(Pg.Pages[11]);
+			RoomInv.Inventory.resize(0);
+			Pg.GetPgInvList(Pg.Pages[7]);
+			Pg.GetPgInv();
+			for (Item Item : Pg.GetRmInv())
+			{
+				RoomInv.Inventory.push_back(Item);
+			}
+			RoomInv.CheckInventory();
+			Pg.PrintPg();
+		}
+		else if (PI.GetCommand() == "three")
+		{
+			Pg.Pg(Pg.Pages[13]);
+			RoomInv.Inventory.resize(0);
+			Pg.GetPgInvList(Pg.Pages[7]);
+			Pg.GetPgInv();
+			for (Item Item : Pg.GetRmInv())
+			{
+				RoomInv.Inventory.push_back(Item);
+			}
+			RoomInv.CheckInventory();
+			Pg.PrintPg();
+		}
+		else if (PI.GetCommand() == "four")
+		{
+			Pg.Pg(Pg.Pages[15]);
+			RoomInv.Inventory.resize(0);
+			Pg.GetPgInvList(Pg.Pages[7]);
+			Pg.GetPgInv();
+			for (Item Item : Pg.GetRmInv())
+			{
+				RoomInv.Inventory.push_back(Item);
+			}
+			RoomInv.CheckInventory();
+			Pg.PrintPg();
+		}
+		else if (PI.GetCommand() == "five")
+		{
+			Pg.Pg(Pg.Pages[17]);
+			RoomInv.Inventory.resize(0);
+			Pg.GetPgInvList(Pg.Pages[7]);
+			Pg.GetPgInv();
+			for (Item Item : Pg.GetRmInv())
+			{
+				RoomInv.Inventory.push_back(Item);
+			}
+			RoomInv.CheckInventory();
+			Pg.PrintPg();
+		}
+		else if (PI.GetCommand() == "six")
+		{
+			Pg.Pg(Pg.Pages[19]);
+			RoomInv.Inventory.resize(0);
+			Pg.GetPgInvList(Pg.Pages[7]);
+			Pg.GetPgInv();
+			for (Item Item : Pg.GetRmInv())
+			{
+				RoomInv.Inventory.push_back(Item);
+			}
+			RoomInv.CheckInventory();
+			Pg.PrintPg();
+		}
+	} while (PI.GetCommand() != "quit"); 
+	std::cout << "end \n\n";
 }
 
 void Storyline::PlayerTakeItem(std::string Command)
@@ -54,7 +135,7 @@ void Storyline::PlayerTakeItem(std::string Command)
 	int OriginalSize = RoomInv.Inventory.size();
 	if (RoomInv.Inventory.size() == 0)
 	{
-		std::cout << "There is nothing here to take. \n";
+		std::cout << "There is nothing here to take. \n\n";
 		return;
 	}
 	for (Item Item : RoomInv.Inventory)
@@ -144,6 +225,7 @@ void Storyline::PlayerDropItem(std::string Command)
 
 void Storyline::PlayerCommandEffect()
 {
+	std::cout << std::endl;
 	if (PI.GetCommand().find("take") == 0)
 	{
 		std::string Command = PI.GetCommand();
@@ -157,24 +239,61 @@ void Storyline::PlayerCommandEffect()
 	}
 	else if (PI.GetCommand().find("look") == 0)
 	{
+		int count = 1;
 		std::string Command = PI.GetCommand();
 		Command = Command.substr(Command.find_first_of(" \t") + 1);
-		if (Command == "room")
+		for (auto Item : RoomInv.Inventory)
 		{
-			// look at the room
-			// in order to do this each page or room needs to become it's own class that is called here.  Each room can then have it's own
-			// array of class items, description and can interact with the character by trading items and can be examined as 
-			// such also by commands like looking at specific properties of the room.  Items and weapons contained in a room can thus be 
-			// examined, picked up or dropped.  Story line will be much shorter this way.  Each room will have come from the class room
-			// and can be thier own objects.
-			std::cout << std::endl;
-			Colr.DarkCyan();
-			Caps.outputText(Pg.GetRoomDescription());
-			std::cout << std::endl;
-		}
-		else
-		{
-			std::cout << "You look at the " << Command << std::endl << std::endl;
+			if (Item.GetName() == Command)
+			{
+				Colr.DarkYellow();
+				std::cout << Item.GetName() << std::endl << Item.GetItemDescription() << std::endl;
+				Item.GetItemDescription();
+				break;
+			}
+			else if (Command == "around")
+			{
+				std::cout << std::endl;
+				if (Pg.Pages[24] != "none")
+				{
+					Colr.DarkGreen();
+					Caps.outputText(Pg.Pages[24]);
+					std::cout << std::endl;
+				}
+				else
+				{
+					Colr.DarkGreen();
+					Caps.outputText(Pg.Pages[0]);
+					std::cout << std::endl;
+				}
+				std::cout << std::endl;
+				Colr.DarkYellow();
+				for (auto Element : RoomInv.Inventory)
+				{
+					Element.PrintSkinny();
+				}
+				Colr.DarkCyan();
+				for (int i = 10; i < Pg.Pages.size(); i += 2)
+				{
+					if (Pg.Pages[i] == "")
+					{
+						break;
+					}
+					else
+					{
+						std::cout << std::endl;
+						Caps.outputText(Pg.Pages[i]);
+					}
+
+				}
+				std::cout << std::endl;
+				break;
+			}
+			else if (count == RoomInv.Inventory.size() && Item.GetName() != Command)
+			{
+				std::cout << "Look at what?" << std::endl << std::endl;
+			}
+			count++;
 		}
 	}
 	else if (PI.GetCommand().find("drop") == 0)
@@ -183,6 +302,10 @@ void Storyline::PlayerCommandEffect()
 		Command = Command.substr(Command.find_first_of(" \t") + 1);
 		PlayerDropItem(Command);
 		std::cout << std::endl;
+	}
+	else if (PI.GetCommand().find("1") == 0)
+	{
+		std::cout << "Go to first link" << std::endl;
 	}
 }
 

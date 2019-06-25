@@ -1,0 +1,25 @@
+Test1A1 	You open the door and slip through hopefully unnoticed.  Kegs and barrels line the walls.  Shelves are filled with sacks of grain and flower.  A thorough inspection of the room reveals a trap door under the several cloth sacks that cover the ground.
+
+
+
+
+
+
+
+
+TextFiles\\Test1A1A.txt
+Ootion One:  Head through the trap door
+TextFiles\\Test1A1B.txt
+Option Two:  Head back to the Cellar
+TextFiles\\Test1A1C.txt
+Option Three:  Leave the cellar and head back down the road
+
+
+
+
+
+
+
+
+
+none

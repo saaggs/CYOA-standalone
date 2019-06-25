@@ -1,1 +1,25 @@
-Let this be the third test
+Test 3 		Let this be the third test -- The fire pit rages infront of you.  Ali turns to you.  The path of fire is only open to those who can walk over the pit of fire and not be destroyed.  It is your turn Lord, I wish you luck. 
+
+
+
+
+
+
+
+
+TextFiles\\Test3A.txt
+Option One:  Walk into the fire pit
+TextFiles\\Test3B.txt 
+Option Two:  Try to Jump over the pit
+
+
+
+
+
+
+
+
+
+
+
+none
