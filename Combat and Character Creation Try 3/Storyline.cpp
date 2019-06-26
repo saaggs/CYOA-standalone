@@ -248,10 +248,9 @@ void Storyline::PlayerCommandEffect()
 			{
 				Colr.DarkYellow();
 				std::cout << Item.GetName() << std::endl << Item.GetItemDescription() << std::endl;
-				Item.GetItemDescription();
 				break;
 			}
-			else if (Command == "around")
+			if (Command == "around")
 			{
 				std::cout << std::endl;
 				if (Pg.Pages[24] != "none")
@@ -289,7 +288,7 @@ void Storyline::PlayerCommandEffect()
 				std::cout << std::endl;
 				break;
 			}
-			else if (count == RoomInv.Inventory.size() && Item.GetName() != Command)
+			if (count == RoomInv.Inventory.size() && Item.GetName() != Command)
 			{
 				std::cout << "Look at what?" << std::endl << std::endl;
 			}
