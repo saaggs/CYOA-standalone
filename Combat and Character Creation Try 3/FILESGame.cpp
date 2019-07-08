@@ -78,6 +78,12 @@ void FILESGame::CreateNPCCharacter()
 	return;
 }
 
+void FILESGame::WritePlayerCharacterToFile()
+{
+	//TODO Write character to File
+	return;
+}
+
 int FILESGame::GetNumberOfNPCs()
 {
 	int NumberOfNPCs = 0;

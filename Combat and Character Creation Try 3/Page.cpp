@@ -47,10 +47,10 @@ void Page::Introduction()
 	Clr.DarkWhite();
 
 	Item BearSkinCloak;
-	BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60);
+	BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60, 60);
 	RmInv.TakeItem(BearSkinCloak);
 	Item BreadAndCheese;
-	BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2);
+	BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2, 2);
 	RmInv.TakeItem(BreadAndCheese);
 
 	for (Item Item : RmInv.Inventory)
@@ -67,6 +67,22 @@ void Page::Introduction()
 		"chair ready for you. \n";
 }
 
+void Page::CleanInvList()
+{
+	PageInventoryList.clear();
+}
+
+void Page::CleanInvStats()
+{
+	PageInventoryStats.clear();
+	return;
+}
+
+std::vector<std::string> Page::RetrieveInvList()
+{
+	return PageInventoryList;
+}
+
 
 
 std::vector<Item> Page::GetRmInv()
@@ -79,9 +95,11 @@ std::string Page::GetRoomDescription()
 	return RoomDescription;
 }
 
-std::string Page::Pg(std::string textfile1, std::string textfile2, std::string textfile3, std::string textfile4)
+void Page::Pg(std::string textfile1)
 {
 	Pages.clear();
+	CleanInvList();
+	CleanInvStats();
 	std::string line_ = "";
 	std::string text = "";
 	std::ifstream file_(textfile1);
@@ -93,67 +111,153 @@ std::string Page::Pg(std::string textfile1, std::string textfile2, std::string t
 		{
 			text = line_;
 			Pages.push_back(text);
-
 		}
 		file_.close();
 	}
-	return text;
+	return;
 }
 
-std::string Page::GetPgInvList(std::string textfile)
+void Page::GetPgInvList(std::string textfile)
 {
+	//std::cout << "GetPgInvList is running \n\n";
 	PageInventoryList.clear();
-	std::string line_ = "";
-	std::string text = "";
-	std::ifstream file_(textfile);
-	if (file_.is_open())
+	if (textfile == "")
 	{
-		//std::cout << "File is open!" << std::endl;
-		//Pages.resize(0);
-		while (std::getline(file_, line_))
-		{
-			text = line_;
-			PageInventoryList.push_back(text);
-
-		}
-		file_.close();
+		std::cout << "There is nothing here to take or buy." << std::endl;
+		return;
 	}
-	return text;
+	else
+	{
+		//std::cout << "GetPGInvList is finding file \n\n";
+		std::string line_ = "";
+		std::string text = "";
+		std::ifstream file_(textfile);
+		if (file_.is_open())
+		{
+			//std::cout << "File is open!" << std::endl;
+			//Pages.resize(0);
+			while (std::getline(file_, line_))
+			{
+				text = line_;
+				PageInventoryList.push_back(text);
+				//std::cout << "pushing back : " << text << std::endl;
+			}
+			file_.close();
+		}
+		return;
+	}
 }
 
 void Page::GetPgInv()
 {
-	for (int i = 0; i <= PageInventoryList.size() - 1; i++)
+	//std::cout << "inventory list size " << PageInventoryList.size() << std::endl;
+	if (PageInventoryList.size() == 0)
 	{
-		std::string line_ = "";
-		std::string text = "";
-		std::ifstream file_(PageInventoryList[i]);
-		if (file_.is_open())
+		PageInventoryStats.clear();
+		PageInventory.clear();
+		//RmInv.ClearRoomInventory();
+	}
+	else
+	{
+		PageInventoryStats.clear();
+		PageInventory.clear();
+		RmInv.ClearRoomInventory();
+		for (int i = 0; i <= PageInventoryList.size() - 1; i++)
 		{
-			PageInventoryStats.clear();
-			while (std::getline(file_, line_))
+			std::string line_ = "";
+			std::string text = "";
+			std::ifstream file_(PageInventoryList[i]);
+			if (file_.is_open())
 			{
-				text = line_;
-				PageInventoryStats.push_back(text);
+				while (std::getline(file_, line_))
+				{
+					text = line_;
+					PageInventoryStats.push_back(text);
+					//std::cout << "GetPgInv() pushing back : " << text << std::endl;
+				}
+				file_.close();
 			}
-			file_.close();
+			else
+			{
+				std::cout << "File did not open \n\n";
+				return;
+			}
+			std::string name = PageInventoryStats[0];
+			double weight = std::stod(PageInventoryStats[1]);
+			int value = std::stoi(PageInventoryStats[2]);
+			int cost = value;
+			std::string description = "There is nothing special about this item. \n\n";
+			if (PageInventoryStats[9] != "")
+			{
+				description = PageInventoryStats[9];
+			}
+			PgItem.CreateItem(name, weight, value, cost, description);
+			//std::cout << "In GetPgInv() PgItem is : " << PgItem.GetName() << std::endl;
+			//std::cout << "RmInv.RoomTakeItem is running in GetPgInv() and taking : " << PgItem.GetName()
+			//	<< " PageInventoryList element : " << i << std::endl;
+			PageInventory.push_back(PgItem); 
+			PageInventoryStats.clear();
 		}
-		else
-		{
-			std::cout << "File did not open \n\n";
-		}
-		std::string name = PageInventoryStats[0];
-		double weight = std::stod(PageInventoryStats[1]);
-		int value = std::stoi(PageInventoryStats[2]);
-		std::string description = "There is nothing special about this item. \n\n";
-		if (PageInventoryStats[9] != "")
-		{
-			description = PageInventoryStats[9];
-		}
-		PgItem.CreateItem(name, weight, value, description);
-		RmInv.Inventory.push_back(PgItem);
 	}
 	return;
+}
+
+void Page::GetPgSaleInv()
+{//std::cout << "inventory list size " << PageInventoryList.size() << std::endl;
+	if (PageInventoryList.size() == 0)
+	{
+		PageInventoryStats.clear();
+		PageInventory.clear();
+		//RmInv.ClearRoomInventory();
+	}
+	else
+	{
+		PageInventoryStats.clear();
+		PageInventory.clear();
+		RmInv.ClearRoomInventory();
+		for (int i = 0; i <= PageInventoryList.size() - 1; i++)
+		{
+			std::string line_ = "";
+			std::string text = "";
+			std::ifstream file_(PageInventoryList[i]);
+			if (file_.is_open())
+			{
+				while (std::getline(file_, line_))
+				{
+					text = line_;
+					PageInventoryStats.push_back(text);
+					//std::cout << "GetPgInv() pushing back : " << text << std::endl;
+				}
+				file_.close();
+			}
+			else
+			{
+				std::cout << "File did not open \n\n";
+				return;
+			}
+			std::string name = PageInventoryStats[0];
+			double weight = std::stod(PageInventoryStats[1]);
+			int value = std::stoi(PageInventoryStats[2]);
+			int cost = PgItem.FindCost(value);
+			std::string description = "There is nothing special about this item. \n\n";
+			if (PageInventoryStats[9] != "")
+			{
+				description = PageInventoryStats[9];
+			}
+			PgItem.CreateItem(name, weight, value, cost, description);
+			//std::cout << "In GetPgInv() PgItem is : " << PgItem.GetName() << std::endl;
+			//std::cout << "RmInv.RoomTakeItem is running in GetPgInv() and taking : " << PgItem.GetName()
+			//	<< " PageInventoryList element : " << i << std::endl;
+			NPCInventory.push_back(PgItem);
+			PageInventoryStats.clear();
+		}
+	}
+	return;
+}
+
+void Page::GetPgGold()
+{
+
 }
 
 
@@ -162,12 +266,13 @@ void Page::PrintPg()
 {
 	Clr.DarkGreen();
 	Cps.outputText(Pages[0]);
-	std::cout << std::endl;
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl << std::endl;
+	/*
 	Clr.DarkYellow();
-	for (int i = 0; i <= RmInv.Inventory.size() - 1; i++)
+	std::cout << "RmInv.GetRoomInv() size is : " << RmInv.GetRoomInv().size() << std::endl;
+	for (auto Element : RmInv.GetRoomInv())
 	{
-		RmInv.Inventory[i].PrintSkinny();
+		Element.PrintSkinny();
 	}
 	std::cout << std::endl;
 	Clr.DarkCyan();
@@ -184,7 +289,8 @@ void Page::PrintPg()
 		}
 
 	}
-	std::cout << std::endl;
+	*/
+	//std::cout << std::endl;
 	return;
 }
 
@@ -193,6 +299,7 @@ std::string Page::GetPgs()
 	std::ifstream("TextFiles\\*.txt");
 	return std::string();
 }
+
 
 
 

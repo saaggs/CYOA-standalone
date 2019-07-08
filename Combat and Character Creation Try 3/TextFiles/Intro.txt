@@ -4,8 +4,8 @@ You wake on a hay bed at the floor of a rickety wood structure.  There has been 
 
 
 
-
-TextFiles\\IntroItemsList.txt
+TextFiles\\Intro_ItemsForSaleList.txt
+TextFiles\\Intro_ItemsList.txt
 
 TextFiles\\Test1.txt
 Option One:  Teleport to The Cellar 
@@ -23,3 +23,8 @@ Option Three:  Search the room a little longer
 
 
 A hay bed covers the floor of a rickety wood structure.  The doors are wide open.  A man of great stature stands waiting on you.
+
+
+
+
+500

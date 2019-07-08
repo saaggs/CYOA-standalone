@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <algorithm>
+#include <vector>
 #include "FInventory.h"
 #include "Item.h"
 #include "Storyline.h"
@@ -32,11 +34,11 @@ void FInventory::GetInv()
 
 void FInventory::CheckInventory()
 {
-	Co.DarkYellow();
+	Co.Green();
 	std::cout << "\nYour inventory: \n";
 	CheckMoney();
 	Co.DarkYellow();
-	for(auto Element : Inventory)
+	for(auto Element : PlayerInv)
 	{
 		Element.PrintSkinny();
 	}
@@ -51,11 +53,141 @@ int FInventory::GetCoin(int coin)
 }
 */
 
+void FInventory::CleanInv()
+{
+	Inventory.clear();
+}
+
+std::vector<Item> FInventory::GetPlayerInv()
+{
+	return PlayerInv;
+}
+
+std::vector<Item> FInventory::GetRoomInv()
+{
+	return RoomInv;
+}
+
+std::vector<Item> FInventory::GetNPCInv()
+{
+	return NPCInv;
+}
+
+std::vector<Item> FInventory::GetNPC2Inv()
+{
+	return NPC2Inv;
+}
+
+std::vector<Item> FInventory::GetShopInv()
+{
+	return ShopInv;
+}
+
+void FInventory::PlayerTakeItem(Item& object)
+{
+	return PlayerInv.push_back(object);
+}
+
+void FInventory::PlayerRemoveItem(Item object)
+{
+	int ItemCount = 0;
+	int VectorSizeCount = 1;
+	for (Item thing : PlayerInv)
+	{
+		/*
+		std::cout << "PlayerInv.size() : " << PlayerInv.size() << std::endl << 
+			"VectorSizeCount is : " << VectorSizeCount << 
+			"\nPlayerRemoveItem ItemCount is on : " << ItemCount << std::endl;
+		*/
+		if (thing.GetName() == object.GetName())
+		{
+			PlayerInv.erase(PlayerInv.begin() + ItemCount);
+			return;
+		}
+		if (PlayerInv.size() == VectorSizeCount)
+		{
+			return;
+		}
+		ItemCount++;
+		VectorSizeCount++;
+	}
+}
+
+void FInventory::RoomTakeItem(Item& object)
+{
+	return RoomInv.push_back(object);
+}
+
+void FInventory::NPCTakeItem(Item& object)
+{
+	return NPCInv.push_back(object);
+}
+
+void FInventory::NPC2TakeItem(Item& object)
+{
+	return NPC2Inv.push_back(object);
+}
+
+void FInventory::ShopTakeItem(Item& object)
+{
+	return ShopInv.push_back(object);
+}
+
+void FInventory::RoomInvRemoveItem(Item object)
+{
+	//Find object position
+	//int it = FindItemIndexInRoom(Item.GetName());
+	//Erase the object at the position
+	//RoomInv.erase(RoomInv.begin()+it);
+	int ItemCount = 0;
+	int VectorSizeCount = 1;
+	for (Item item : RoomInv)
+	{
+		if (item.GetName() == object.GetName())
+		{
+			RoomInv.erase(RoomInv.begin() + ItemCount);
+			return;
+		}
+		if (RoomInv.size() == VectorSizeCount)
+		{
+			return;
+		}
+		ItemCount++;
+		VectorSizeCount++;
+	}
+}
+
+void FInventory::ClearRoomInventory()
+{
+	RoomInv.clear();
+	return;
+}
+
+void FInventory::NPCInvRemoveItem(Item& object)
+{
+	int ItemCount = 0;
+	int VectorSizeCount = 1;
+	for (Item item : NPCInv)
+	{
+		if (item.GetName() == object.GetName())
+		{
+			NPCInv.erase(NPCInv.begin() + ItemCount);
+			return;
+		}
+		ItemCount++;
+		VectorSizeCount++;
+		if (NPCInv.size() == VectorSizeCount)
+		{
+			return;
+		}
+	}
+}
+
 int FInventory::GetGold(int num)
 {
 	Co.DarkYellow();
 	Gold = Gold + num;
-	std::cout << "\n" << "You recieve " << num << " Gold . \n";
+	std::cout << "\n" << "You recieve " << num << " Gold. \n";
 	return Gold;
 }
 
@@ -129,28 +261,14 @@ bool FInventory::CheckEnoughGold(int num)
 	if (Gold >= num) { return true; }
 	else
 	{
-		Co.Yellow();
-		std::cout << "\nYou don't have enough gold to do that. \n";
+		Co.Green();
+		std::cout << "You don't have enough gold for that. \n";
 		return false;
 	}
 }
 
 void FInventory::TakeItem(Item &object)
 {
-	/*
-	if (!(object))
-	{
-		Co.Green();
-		std::cout << "You already have the ";
-		Co.DarkYellow();
-		std::cout << object.GetName() << std::endl;
-	}
-	*/
-	//else
-	//{
-		Inventory.push_back(object);
-		//object.MoveToInventory();
-	//}
-	return;
+	return Inventory.push_back(object);
 }
 

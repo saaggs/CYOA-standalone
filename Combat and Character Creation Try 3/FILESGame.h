@@ -15,6 +15,7 @@ public:
 	void Clean();
 	void CreatePlayerCharacter();
 	void CreateNPCCharacter();
+	void WritePlayerCharacterToFile();
 	Character Player;
 	FInventory PlayerInv;
 	Storyline SectionOne;

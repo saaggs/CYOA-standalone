@@ -9,21 +9,28 @@ class Page
 public:
 	Page();
 	~Page();
+	friend class FInventory;
 	void Introduction();
-	std::vector <Item> GetRmInv();
+	void CleanInvList();
+	void CleanInvStats();
+	std::vector <std::string> RetrieveInvList();
+	std::vector<Item> GetRmInv();
 	std::string GetRoomDescription();
-	std::string Pg(std::string textfile1, std::string textfile2 = "", std::string textfile3 = "", std::string textfile4 = "");
+	void Pg(std::string textfile1);
 	void PrintPg();
-	std::string GetPgInvList(std::string textfile);
+	void GetPgInvList(std::string textfile);
 	void GetPgInv();
+	void GetPgSaleInv();
+	void GetPgGold();
 	std::string GetPgs();
 	std::vector <std::string> Pages;
+	std::vector <Item> PageInventory;
+	std::vector <Item> NPCInventory;
 
 private:
 	// story text
 	// scene description
 	// scene inventory
-	std::vector <Item> PageInventory;
 	std::vector <std::string> PageInventoryList;
 	std::vector <std::string> PageInventoryStats;
 	std::string RoomDescription = "";

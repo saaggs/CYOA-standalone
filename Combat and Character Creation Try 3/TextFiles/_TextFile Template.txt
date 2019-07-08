@@ -1,0 +1,31 @@
+Page Paragraph One : string -- 
+Page Paragraph Two : string
+Page Paragraph Three : string
+Page Paragraph Four : string
+Page Paragraph Five : string
+Combat NPC List : File Name -- This file lists the file names of all NPC's that will participate in combat.  Leave empty for no combat
+Items Sale List : File Name -- This file lists the file names of all items to populate NPC inventories for sale.  Leave empty for no sale items 
+Items List : File Name -- This file lists the file names of all items to be imported to the page.  Leave empty for no items to pick up
+
+Line 10 - 20 are reserved for upto six player choices
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Room Description : string
+
+Friendly NPC : bool -- if an NPC can purchase items from the player do not leave this line blank
+NPC Gold : int -- if NPC then put the amount of gold they have to spend here
+
+Gold given to player : int
+Gold player can find in a room : int

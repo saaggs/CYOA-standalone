@@ -15,6 +15,7 @@
 
 TextWrapAndCAPS Caps;
 TextColors Colr;
+FInventory Inv;
 FInventory PlayerInv;
 FInventory RoomInv;
 FILESGame IG;
@@ -33,15 +34,56 @@ Storyline::~Storyline()
 void Storyline::ActionsAndScenes()
 {
 	Pg.Pg("TextFiles\\Intro.txt");
-	RoomInv.Inventory.resize(0);
-	Pg.GetPgInvList(Pg.Pages[7]);
-	Pg.GetPgInv();
-	for (Item Item : Pg.GetRmInv())
-	{
-		RoomInv.Inventory.push_back(Item);
-	}
-	//RoomInv.CheckInventory();
 	Pg.PrintPg();
+	Inv.ClearRoomInventory();
+	if (Pg.Pages[6] != "")
+	{
+		Pg.GetPgInvList(Pg.Pages[6]);
+		Pg.GetPgSaleInv();
+		for (auto item : Pg.NPCInventory)
+		{
+			Inv.NPCTakeItem(item);
+		}
+		if (Inv.GetNPCInv().size() != 0)
+		{
+			Colr.Green();
+			std::cout << "The following items are for sale: \n\n";
+			for (auto item : Inv.GetNPCInv())
+			{
+				item.PrintItemForSale();
+			}
+		}
+	}
+	if (Pg.Pages[7] != "")
+	{
+		//std::cout << "ActionAndScenes is running having found line 7 \n\n";
+		Pg.GetPgInvList(Pg.Pages[7]);
+		Pg.GetPgInv();
+		//std::cout << "Pg.PageInventory: " << std::endl;
+		for (auto item : Pg.PageInventory)
+		{
+			//std::cout << item.GetName() << std::endl;
+			Inv.RoomTakeItem(item);
+		}
+		if (Inv.GetRoomInv().size() != 0)
+		{
+			std::wcout << std::endl;
+			Colr.Green();
+			std::cout << "A quick search of the area reveals the followng items: \n\n";
+			for (auto item : Inv.GetRoomInv())
+			{
+				item.PrintSkinny();
+			}
+		}
+	}
+	PrintConnectingPages();
+	if (Pg.Pages[29] != "")
+	{
+		//TODO transfer gold from page to player
+		std::string gold = Pg.Pages[29];
+		int GetGold = std::stoi(gold);
+		Inv.GetGold(GetGold);
+	}
 	do
 	{
 		Colr.Grey();
@@ -49,80 +91,115 @@ void Storyline::ActionsAndScenes()
 		PlayerCommandEffect();
 		if (PI.GetCommand() == "one")
 		{
+			Pg.CleanInvList();
+			Pg.CleanInvStats();
+			Pg.PageInventory.clear();
+			Inv.ClearRoomInventory();
 			Pg.Pg(Pg.Pages[9]);
-			RoomInv.Inventory.resize(0);
-			Pg.GetPgInvList(Pg.Pages[7]);
-			Pg.GetPgInv();
-			for (Item Item : Pg.GetRmInv())
+			if (Pg.Pages[7] == "")
 			{
-				RoomInv.Inventory.push_back(Item);
+				Pg.CleanInvList();
+				Pg.CleanInvStats();
+				//RoomInv.Inventory.clear();
+				Pg.PrintPg();
 			}
-			RoomInv.CheckInventory();
-			Pg.PrintPg();
+			else
+			{
+				Pg.GetPgInvList(Pg.Pages[7]);
+				Pg.GetPgInv();
+				
+				for (Item Item : Pg.GetRmInv())
+				{
+					//RoomInv.CheckInventory();
+					//RoomInv.Inventory.push_back(Item);
+				}
+				//RoomInv.CheckInventory();
+				Pg.PrintPg();
+			}
 		}
 		else if (PI.GetCommand() == "two")
 		{
 			Pg.Pg(Pg.Pages[11]);
-			RoomInv.Inventory.resize(0);
-			Pg.GetPgInvList(Pg.Pages[7]);
-			Pg.GetPgInv();
-			for (Item Item : Pg.GetRmInv())
+			//RoomInv.Inventory.clear();
+			//RoomInv.Inventory.resize(0);
+			if (Pg.Pages[7] != "")
 			{
-				RoomInv.Inventory.push_back(Item);
+				Pg.GetPgInvList(Pg.Pages[7]);
+				Pg.GetPgInv();
+				for (Item Item : Pg.GetRmInv())
+				{
+					RoomInv.Inventory.push_back(Item);
+				}
+				//RoomInv.CheckInventory();
 			}
-			RoomInv.CheckInventory();
 			Pg.PrintPg();
 		}
 		else if (PI.GetCommand() == "three")
 		{
 			Pg.Pg(Pg.Pages[13]);
-			RoomInv.Inventory.resize(0);
-			Pg.GetPgInvList(Pg.Pages[7]);
-			Pg.GetPgInv();
-			for (Item Item : Pg.GetRmInv())
+			//RoomInv.Inventory.clear();
+			//RoomInv.Inventory.resize(0);
+			if (Pg.Pages[7] != "")
 			{
-				RoomInv.Inventory.push_back(Item);
+				Pg.GetPgInvList(Pg.Pages[7]);
+				Pg.GetPgInv();
+				for (Item Item : Pg.GetRmInv())
+				{
+					//RoomInv.Inventory.push_back(Item);
+				}
+				//RoomInv.CheckInventory();
 			}
-			RoomInv.CheckInventory();
 			Pg.PrintPg();
 		}
 		else if (PI.GetCommand() == "four")
 		{
 			Pg.Pg(Pg.Pages[15]);
-			RoomInv.Inventory.resize(0);
-			Pg.GetPgInvList(Pg.Pages[7]);
-			Pg.GetPgInv();
-			for (Item Item : Pg.GetRmInv())
+			//RoomInv.Inventory.clear();
+			//RoomInv.Inventory.resize(0);
+			if (Pg.Pages[7] != "")
 			{
-				RoomInv.Inventory.push_back(Item);
+				Pg.GetPgInvList(Pg.Pages[7]);
+				Pg.GetPgInv();
+				for (Item Item : Pg.GetRmInv())
+				{
+					//RoomInv.Inventory.push_back(Item);
+				}
+				//RoomInv.CheckInventory();
 			}
-			RoomInv.CheckInventory();
 			Pg.PrintPg();
 		}
 		else if (PI.GetCommand() == "five")
 		{
 			Pg.Pg(Pg.Pages[17]);
-			RoomInv.Inventory.resize(0);
-			Pg.GetPgInvList(Pg.Pages[7]);
-			Pg.GetPgInv();
-			for (Item Item : Pg.GetRmInv())
+			//RoomInv.Inventory.clear();
+			//RoomInv.Inventory.resize(0);
+			if (Pg.Pages[7] != "")
 			{
-				RoomInv.Inventory.push_back(Item);
+				Pg.GetPgInvList(Pg.Pages[7]);
+				Pg.GetPgInv();
+				for (Item Item : Pg.GetRmInv())
+				{
+					RoomInv.Inventory.push_back(Item);
+				}
+				RoomInv.CheckInventory();
 			}
-			RoomInv.CheckInventory();
 			Pg.PrintPg();
 		}
 		else if (PI.GetCommand() == "six")
 		{
 			Pg.Pg(Pg.Pages[19]);
-			RoomInv.Inventory.resize(0);
-			Pg.GetPgInvList(Pg.Pages[7]);
-			Pg.GetPgInv();
-			for (Item Item : Pg.GetRmInv())
+			//RoomInv.Inventory.clear();
+			//RoomInv.Inventory.resize(0);
+			if (Pg.Pages[7] != "")
 			{
-				RoomInv.Inventory.push_back(Item);
+				Pg.GetPgInvList(Pg.Pages[7]);
+				Pg.GetPgInv();
+				for (Item Item : Pg.GetRmInv())
+				{
+					//RoomInv.Inventory.push_back(Item);
+				}
+				//RoomInv.CheckInventory();
 			}
-			RoomInv.CheckInventory();
 			Pg.PrintPg();
 		}
 	} while (PI.GetCommand() != "quit"); 
@@ -132,100 +209,160 @@ void Storyline::ActionsAndScenes()
 void Storyline::PlayerTakeItem(std::string Command)
 {
 	int ItemCount = 0;
-	int OriginalSize = RoomInv.Inventory.size();
-	if (RoomInv.Inventory.size() == 0)
+	int OriginalSize = Inv.GetRoomInv().size();
+	int VectorSizeCount = 1;
+	if (OriginalSize == 0)
 	{
-		std::cout << "There is nothing here to take. \n\n";
+		Colr.Green();
+		std::cout << "There is nothing here to take. \n";
 		return;
 	}
-	for (Item Item : RoomInv.Inventory)
+	for (Item item : Inv.GetRoomInv())  //(Item item : Pg.PageInventory)
 	{
-		//	std::cout << "Room Inventory \n";
-		//RoomInv.CheckInventory();
-		//std::cout << "Move loop is running \n";
-		//std::cout << "Item: " << Item.GetName() << "\n";
-
-		if (Item.GetName() == Command)
+		if (item.GetName() == Command)
 		{
-			//std::cout << Command << " found \n";
-			//Colr.Green();
-			//for (Item Item : RoomInv.Inventory)
-			//{
-			//Item.PrintSkinny();
-			//}
-			//std::cout << "\n\n";
-			PlayerInv.Inventory.push_back(std::move(Item));
+			Inv.PlayerTakeItem(item);
 			Colr.Green();
-			std::cout << "You take " << Item.GetName();
-			RoomInv.Inventory.erase(RoomInv.Inventory.begin() + ItemCount);
-			break;
+			std::cout << "You take the " << item.GetName() << std::endl;
+			Inv.RoomInvRemoveItem(item);
+			//Pg.PageInventory.erase(Pg.PageInventory.begin()+ItemCount);
+			return;
+		}
+		if (VectorSizeCount == Inv.GetRoomInv().size())  //(ItemCount == Pg.PageInventory.size())
+		{
+			int InvCount = 0;
+			for (Item saleinv : Pg.NPCInventory)
+			{
+				if (saleinv.GetName() == Command)
+				{
+					Colr.Green();
+					std::cout << "You must \'buy\' the " << saleinv.GetName() << std::endl;
+					return;
+				}
+			}
+			Colr.Green();
+			std::cout << "That item is not here \n";
+			return;
 		}
 		ItemCount++;
+		VectorSizeCount++;
+		//std::cout << "Item Count : " << ItemCount << std::endl;
 	}
-	if (RoomInv.Inventory.size() == OriginalSize)
+}
+
+void Storyline::PlayerBuyItem(std::string Command)
+{
+	int ItemCount = 0;
+	int OriginalSize = Inv.GetNPCInv().size();
+	if (OriginalSize == 0)
 	{
-		std::cout << "You cannot find \"" << Command << "\"" << std::endl;
-		return;
+		int ItemCount = 0;
 	}
 	else
 	{
-		RoomInv.Inventory.resize(ItemCount);
+		int ItemCount = 1;
 	}
-	//else if (RoomInv.Inventory[ItemCount].GetName() == Command)
-	//{
-	//}
+	//std::cout << "Original size " << OriginalSize << std::endl;
+	//std::cout << "Trying to find room inventory " << std::endl;
+	/*
+	for (auto Item : Pg.PageInventory)
+	{
+		std::cout << Item.GetName() << std::endl;
+	}
+	*/
+	if (OriginalSize == 0)
+	{
+		Colr.Green();
+		std::cout << "There is nothing here to buy. \n";
+		return;
+	}
+	for (Item item : Inv.GetNPCInv())  //(Item Item : Pg.NPCInventory)
+	{
+		if (item.GetName() == Command)
+		{
+			int cost = item.GetCost();
+			bool Afford = Inv.CheckEnoughGold(cost);
+			if (Afford == true)
+			{
+				Inv.PlayerTakeItem(item);
+				Colr.Green();
+				Inv.SpendGold(item.GetCost());
+				std::cout << "You bought the " << item.GetName() << std::endl;
+				//TODO NPCInvRemoveItem is causing a crash!!
+				Inv.NPCInvRemoveItem(item);
+				//Pg.PageInventory.erase(Pg.PageInventory.begin() + ItemCount);
+				return;
+			}
+			else
+			{
+				return;
+			}
+		}
+		ItemCount++;
+		if (ItemCount == Inv.GetNPCInv().size())  //(ItemCount == Pg.NPCInventory.size())
+		{
+			Colr.Green();
+			std::cout << "No such item for sale here \n";
+			return;
+		}
+		//std::cout << "Item Count : " << ItemCount << std::endl;
+	}
 	return;
 }
 
 void Storyline::PlayerDropItem(std::string Command)
 {
+	if (Inv.GetPlayerInv().size() == 0)
+	{
+		std::cout << "Your inventory is empty. \n";
+		return;
+	}
 	int ItemCount = 0;
-	int OriginalSize = PlayerInv.Inventory.size();
-	for (Item Item : PlayerInv.Inventory)
+	int VectorSizeCount = 1;
+	int OriginalSize = Inv.GetPlayerInv().size();
+	for (Item item : Inv.GetPlayerInv())
 	{
 		//	std::cout << "Room Inventory \n";
 		//RoomInv.CheckInventory();
-		std::cout << "Move loop is running \n";
-		std::cout << "Item: " << Item.GetName() << "\n";
-
-		if (Item.GetName() == Command)
+		//std::cout << "Move loop is running \n";
+		//std::cout << "Item: " << Item.GetName() << "\n";
+		if (item.GetName() == Command)
 		{
-			std::cout << Command << " found \n";
-			if (PlayerInv.Inventory.size() == 0)
-			{
-				std::cout << "Your inventory is empty. \n";
-				break;
-			}
-			else
+			//std::cout << Command << " found \n";
 			{
 				Colr.Green();
 				//for (Item Item : RoomInv.Inventory)
 				//{
-				Item.PrintSkinny();
+				//Item.PrintSkinny();
 				//}
 				std::cout << "\n\n";
-				RoomInv.Inventory.push_back(std::move(Item));
-				std::cout << "You drop " << Item.GetName();
-				PlayerInv.Inventory.erase(PlayerInv.Inventory.begin() + ItemCount);
-				break;
+				Inv.RoomTakeItem(item);
+				//Pg.PageInventory.push_back(std::move(Item));
+				Inv.PlayerRemoveItem(item);
+				std::cout << "You drop the " << item.GetName() << std::endl;
+				return;
 			}
 		}
 		ItemCount++;
+		VectorSizeCount++;
 	}
-	if (PlayerInv.Inventory.size() == OriginalSize)
+	if (VectorSizeCount == OriginalSize)
 	{
 		std::cout << "You do not have the \"" << Command << "\"" << std::endl;
 		return;
 	}
-	//else if (RoomInv.Inventory[ItemCount].GetName() == Command)
-	//{
-	//}
-	return;
 }
 
 void Storyline::PlayerCommandEffect()
 {
 	std::cout << std::endl;
+	if (PI.GetCommand().find("buy") == 0)
+	{
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		PlayerBuyItem(Command);
+		std::cout << std::endl;
+	}
 	if (PI.GetCommand().find("take") == 0)
 	{
 		std::string Command = PI.GetCommand();
@@ -235,65 +372,113 @@ void Storyline::PlayerCommandEffect()
 	}
 	else if (PI.GetCommand().find("inv") == 0)
 	{
-		PlayerInv.CheckInventory();
+		Inv.CheckInventory();
 	}
 	else if (PI.GetCommand().find("look") == 0)
 	{
 		int count = 1;
 		std::string Command = PI.GetCommand();
 		Command = Command.substr(Command.find_first_of(" \t") + 1);
-		for (auto Item : RoomInv.Inventory)
+		for (auto InvItem : Inv.GetPlayerInv())
+		{
+			if (InvItem.GetName() == Command)
+			{
+				Colr.DarkYellow();
+				std::cout << InvItem.GetName() << std::endl << InvItem.GetItemDescription() << std::endl;
+				return;
+			}
+		}
+		for (auto Item : Inv.GetRoomInv())
 		{
 			if (Item.GetName() == Command)
 			{
 				Colr.DarkYellow();
 				std::cout << Item.GetName() << std::endl << Item.GetItemDescription() << std::endl;
-				break;
+				return;
 			}
-			if (Command == "around")
-			{
-				std::cout << std::endl;
-				if (Pg.Pages[24] != "none")
-				{
-					Colr.DarkGreen();
-					Caps.outputText(Pg.Pages[24]);
-					std::cout << std::endl;
-				}
-				else
-				{
-					Colr.DarkGreen();
-					Caps.outputText(Pg.Pages[0]);
-					std::cout << std::endl;
-				}
-				std::cout << std::endl;
-				Colr.DarkYellow();
-				for (auto Element : RoomInv.Inventory)
-				{
-					Element.PrintSkinny();
-				}
-				Colr.DarkCyan();
-				for (int i = 10; i < Pg.Pages.size(); i += 2)
-				{
-					if (Pg.Pages[i] == "")
-					{
-						break;
-					}
-					else
-					{
-						std::cout << std::endl;
-						Caps.outputText(Pg.Pages[i]);
-					}
-
-				}
-				std::cout << std::endl;
-				break;
-			}
-			if (count == RoomInv.Inventory.size() && Item.GetName() != Command)
+			if (count == Inv.GetRoomInv().size() && Item.GetName() != Command && Command != "around")
 			{
 				std::cout << "Look at what?" << std::endl << std::endl;
+				return;
 			}
 			count++;
 		}
+		if (Command == "around")
+		{
+			std::cout << std::endl;
+			//std::cout << "look around is running \n\n";
+			if (Pg.Pages[24] != "none")
+			{
+				Colr.DarkGreen();
+				Caps.outputText(Pg.Pages[24]);
+				std::cout << std::endl << std::endl;
+			}
+			else
+			{
+				Colr.DarkGreen();
+				Caps.outputText(Pg.Pages[0]);
+				std::cout << std::endl << std::endl;
+			}
+			if (Inv.GetNPCInv().size() != 0)
+			{
+				Colr.Green();
+				std::cout << std::endl << "For sale: \n";
+				Colr.DarkYellow();
+				for (auto Element : Inv.GetNPCInv())
+				{
+					Element.PrintItemForSale();
+				}
+			}
+			if (Inv.GetRoomInv().size() == 0)
+			{
+				std::cout << std::endl;
+			}
+			else
+			{
+				Colr.Green();
+				std::cout << std::endl << "You found: \n";
+				Colr.DarkYellow();
+				for (auto Element : Inv.GetRoomInv())
+				{
+					Element.PrintSkinny();
+				}
+			}
+			Colr.DarkCyan();
+			std::cout << std::endl;
+			for (int i = 10; i < Pg.Pages.size(); i += 2)
+			{
+				if (Pg.Pages[i] == "")
+				{
+					break;
+				}
+				else
+				{
+					std::cout << std::endl;
+					Caps.outputText(Pg.Pages[i]);
+				}
+
+			}
+			std::cout << std::endl;
+			return;
+		}
+		if (Command == "around"  && Inv.GetRoomInv().size() == 0 && Inv.GetNPCInv().size() == 0)
+		{
+			std::cout << std::endl;
+			//std::cout << "look around is running \n\n";
+			if (Pg.Pages[24] != "none")
+			{
+				Colr.DarkGreen();
+				Caps.outputText(Pg.Pages[24]);
+				std::cout << std::endl;
+			}
+			else
+			{
+				Colr.DarkGreen();
+				Caps.outputText(Pg.Pages[0]);
+				std::cout << std::endl;
+			}
+		}
+		return;
 	}
 	else if (PI.GetCommand().find("drop") == 0)
 	{
@@ -301,11 +486,40 @@ void Storyline::PlayerCommandEffect()
 		Command = Command.substr(Command.find_first_of(" \t") + 1);
 		PlayerDropItem(Command);
 		std::cout << std::endl;
+		return;
 	}
+	/*
 	else if (PI.GetCommand().find("1") == 0)
 	{
 		std::cout << "Go to first link" << std::endl;
 	}
+	*/
+}
+
+void Storyline::PrintConnectingPages()
+{
+	std::wcout << std::endl;
+	Colr.DarkCyan();
+	for (int i = 10; i < Pg.Pages.size(); i += 2)
+	{
+		if (Pg.Pages[i] == "")
+		{
+			break;
+		}
+		else
+		{
+			std::cout << std::endl;
+			Caps.outputText(Pg.Pages[i]);
+		}
+
+	}
+	std::cout << std::endl << std::endl;
+	return;
+}
+
+std::vector<Item> Storyline::GetTempInv()
+{
+	return TempInv;
 }
 
 
