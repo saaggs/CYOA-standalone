@@ -12,8 +12,6 @@ public:
 	void CheckInventory();
 	//int GetCoin(int coin);
 	void CleanInv();
-	//TODO Individual inventories need to be moved to Storyline file
-	//in order to simplify moving items between different inventories. 
 	//access player inventory vector
 	std::vector <Item> GetPlayerInv();
 	//access room inventory vector
@@ -27,7 +25,7 @@ public:
 	//player take item
 	void PlayerTakeItem(Item& object);
 	//Player drop item
-	void PlayerRemoveItem(Item object);
+	void PlayerRemoveItem(Item& object);
 	//room take item
 	void RoomTakeItem(Item& object);
 	//NPC take item
@@ -36,13 +34,10 @@ public:
 	void NPC2TakeItem(Item& object);
 	//shop take item
 	void ShopTakeItem(Item& object);
-	void RoomInvRemoveItem(Item object);
-	//claer room inventory
+	void RoomInvRemoveItem(Item& object);
+	//clear room inventory
 	void ClearRoomInventory();
-	//TODO NPC remove item
-	void NPCInvRemoveItem(Item& object);
-	//TODO NPC2 remove item
-	//TODO shop remove item
+	void NPCInvRemoveItem(Item object);
 	int GetGold(int num);
 	int LooseGold(int num);
 	int SpendGold(int num);

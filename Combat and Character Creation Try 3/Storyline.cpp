@@ -79,7 +79,7 @@ void Storyline::ActionsAndScenes()
 	PrintConnectingPages();
 	if (Pg.Pages[29] != "")
 	{
-		//TODO transfer gold from page to player
+		//transfer gold from page to player
 		std::string gold = Pg.Pages[29];
 		int GetGold = std::stoi(gold);
 		Inv.GetGold(GetGold);
@@ -91,6 +91,7 @@ void Storyline::ActionsAndScenes()
 		PlayerCommandEffect();
 		if (PI.GetCommand() == "one")
 		{
+			//reset and find new saleprice and cost for items in player inv.
 			Pg.CleanInvList();
 			Pg.CleanInvStats();
 			Pg.PageInventory.clear();
@@ -262,14 +263,6 @@ void Storyline::PlayerBuyItem(std::string Command)
 	{
 		int ItemCount = 1;
 	}
-	//std::cout << "Original size " << OriginalSize << std::endl;
-	//std::cout << "Trying to find room inventory " << std::endl;
-	/*
-	for (auto Item : Pg.PageInventory)
-	{
-		std::cout << Item.GetName() << std::endl;
-	}
-	*/
 	if (OriginalSize == 0)
 	{
 		Colr.Green();
@@ -288,9 +281,12 @@ void Storyline::PlayerBuyItem(std::string Command)
 				Colr.Green();
 				Inv.SpendGold(item.GetCost());
 				std::cout << "You bought the " << item.GetName() << std::endl;
-				//TODO NPCInvRemoveItem is causing a crash!!
 				Inv.NPCInvRemoveItem(item);
 				//Pg.PageInventory.erase(Pg.PageInventory.begin() + ItemCount);
+				if (OriginalSize == Inv.GetNPCInv().size())
+				{
+					Inv.NPCInvRemoveItem(item);
+				}
 				return;
 			}
 			else
@@ -308,6 +304,97 @@ void Storyline::PlayerBuyItem(std::string Command)
 		//std::cout << "Item Count : " << ItemCount << std::endl;
 	}
 	return;
+}
+
+void Storyline::PlayerSellItem(std::string Command)
+{
+	//is there an NPC willing to buy items?
+	if (Pg.Pages[26] == "")
+	{
+		Colr.Green();
+		std::cout << "There is no one here to buy items. \n\n";
+		return;
+	}
+	//Does the NPC have enouhg gold?
+	//if (Pg.Pages[27] == "")
+	if (Inv.GetPlayerInv().size() == 0)
+	{
+		Colr.Green();
+		std::cout << "Your inventory is empty. \n";
+		return;
+	}
+	bool DoneSelling = false;
+	int OriginalSize = Inv.GetPlayerInv().size();
+	int ItemCount = 0;
+	int VectorSizeCount = 1;
+	for (Item item : Inv.GetPlayerInv())
+	{
+		item.GetSalePrice();
+		if (item.GetName() == Command)
+		{
+			int NPCGold = std::stoi(Pg.Pages[27]);
+			if (NPCGold < item.GetSalePrice())
+			{
+				Colr.Green();
+				std::cout << Pg.Pages[26] << " isn't interested in buying the " << item.GetName() 
+					<< "\n\n";
+				return;
+			}
+			if (NPCGold > item.GetSalePrice())
+			{
+				Colr.Green();
+				std::cout << Pg.Pages[26] << " is willing to pay " << item.GetSalePrice() <<
+					" gold.  Do you want to sell the " << item.GetName() << "?  yes or no \n\n";
+				PI.PlayerInput();
+				std::string PlayerIn = "";
+				PlayerIn = PI.GetCommand();
+				std::cout << "\n";
+				while (DoneSelling == false)
+					{
+					if (PlayerIn[0] == 'y' || PlayerIn[0] == 'n' || PlayerIn[0] == 'Y' || PlayerIn[0] == 'N')
+					{
+						DoneSelling = true;
+					}
+					else
+					{
+						Colr.Green();
+						std::cout << "Please enter 'yes' or 'no' \n\n";
+						PI.PlayerInput();
+						PlayerIn = PI.GetCommand();
+						std::cout << std::endl;
+					}
+				}
+				if (PlayerIn[0] == 'y' || PlayerIn[0] == 'Y')
+				{
+					Colr.Green();
+					Inv.NPCTakeItem(item);
+					Inv.PlayerRemoveItem(item);
+					std::cout << "\n\n";
+					std::cout << "You sold the " << item.GetName() <<
+						" to " << Pg.Pages[26] << " for " <<
+						item.GetSalePrice() << " gold." << std::endl;
+					Inv.GetGold(item.GetSalePrice());
+					//std::cout << "item " << item.GetName() << " " << item.GetCost();
+				}
+				if (PlayerIn[0] == 'n' || PlayerIn[0] == 'N')
+				{
+					Colr.Green();
+					std::cout << "You decided not to sell the " << item.GetName() 
+						<< std::endl;
+					DoneSelling = true;
+					return;
+				}
+			}
+		}
+		if (VectorSizeCount == OriginalSize)
+		{
+			Colr.Green();
+			std::cout << "You do not have the \"" << Command << "\"" << std::endl;
+			return;
+		}
+		ItemCount++;
+		VectorSizeCount++;
+	}
 }
 
 void Storyline::PlayerDropItem(std::string Command)
@@ -363,6 +450,13 @@ void Storyline::PlayerCommandEffect()
 		PlayerBuyItem(Command);
 		std::cout << std::endl;
 	}
+	if (PI.GetCommand().find("sell") == 0)
+	{
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		PlayerSellItem(Command);
+		std::cout << std::endl;
+	}
 	if (PI.GetCommand().find("take") == 0)
 	{
 		std::string Command = PI.GetCommand();
@@ -388,6 +482,15 @@ void Storyline::PlayerCommandEffect()
 				return;
 			}
 		}
+		for (auto NPCItem : Inv.GetNPCInv())
+		{
+			if (NPCItem.GetName() == Command)
+			{
+				Colr.DarkYellow();
+				std::cout << NPCItem.GetName() << std::endl << NPCItem.GetItemDescription() << std::endl;
+				return;
+			}
+		}
 		for (auto Item : Inv.GetRoomInv())
 		{
 			if (Item.GetName() == Command)
@@ -398,7 +501,8 @@ void Storyline::PlayerCommandEffect()
 			}
 			if (count == Inv.GetRoomInv().size() && Item.GetName() != Command && Command != "around")
 			{
-				std::cout << "Look at what?" << std::endl << std::endl;
+				Colr.Green();
+				std::cout << "There is nothing here by that name \n\n";
 				return;
 			}
 			count++;
@@ -428,6 +532,7 @@ void Storyline::PlayerCommandEffect()
 				{
 					Element.PrintItemForSale();
 				}
+				std::cout << std::endl;
 			}
 			if (Inv.GetRoomInv().size() == 0)
 			{

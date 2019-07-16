@@ -190,23 +190,20 @@ void PlayGame()
 //**  be an issue.																**
 //================================================================================
 
-//TODO Create a way the player can buy things from the NPC inventory.
-//TODO Pages need a way to give gold to the player
 
-//TODO Must be able to sell items.  Consider buyback as well.
-//Buyback could be NPC2 inventory.
+//TODO Paragraphs 1 thru 5 from TextFile Lines 1 thru 5 must be initiated
 
 //TODO Paragraphs need to replace placeholders with character names and titles
 
+//TODO If a page doesn't have player choices, then need a way to advance once player is ready
+
 //TODO combat pages.  texfiles must be able to create or auto generate NPCS
-//and combat must be initiated.  NPC's could be their own text files and
-//
+//and combat must be initiated.  NPC's could be their own text files
 
 //TODO need a way for the game to determine if a character has a certain power or not.
 
 //TODO need to decide on the actual abilities the character will have access to.
-//All inventory that can be picked up without spending gold can be 
-//placed in PageInventory.
+
 //All Items that need to be paid for go into NPC inventory and cost gold.
 
 
@@ -232,6 +229,9 @@ void PlayGame()
 
 //Room Inventory is now working
 //Player pick up and drop items
+//Player can buy items
+//Pages can give gold to player
+
 
 //=======================================================================================================
 
@@ -256,7 +256,13 @@ void PlayGame()
 //=======================================================================================================
 
 
-//For Shienske
+
+//=======================================================================================================
+
+// *+*+*+*+*+*+*+*+*+*+
+// ||  For Shienske  ||
+// *+*+*+*+*+*+*+*+*+*+
+
 //I Fought the Law and the Law Won -- Clash
 //Whole of Appetite for Destruction -- Guns and Roses
 	//Paradise City
@@ -275,3 +281,5 @@ void PlayGame()
 //Hard Days Night -- Beatles
 //Smoke on the Water -- Deep Purple
 //Ask for Shienske's list
+
+//=======================================================================================================

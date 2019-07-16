@@ -157,6 +157,18 @@ bool FILESGame::AskToPlay()
 	{
 		return false;
 	}
+	//TODO AskToPlay needs failsafe
+	/*
+	if ((YesOrNo[0] == 'n') || (YesOrNo[0] == 'N'))
+	{
+		return false;
+	}
+	else
+	{
+		Color.Green();
+		std::cout << "Please enter 'yes' or 'no' \n\n";
+	}
+	*/
 }
 
 bool FILESGame::AskToRollAgain()

@@ -1,8 +1,8 @@
-You wake on a hay bed at the floor of a rickety wood structure.  There has been some bread and cheese tied in a burlap napsack is laying near the hay bed.  The doors swing open from the middle.  A giant of a man stands in the doorframe.  "Gather your things, we leave at once," says the man.  
-
-
-
-
+You wake on a hay bed at the floor of a rickety wood structure.  There has been some bread and cheese tied in a burlap napsack is laying near the hay bed.  The doors swing open from the middle.  
+A giant of a man stands in the doorframe.  "Gather your things, we leave at once," says the man.  
+It is up to you to decide if you are going to leave with the man.
+He looks trust worthy...
+... then again
 
 TextFiles\\Intro_ItemsForSaleList.txt
 TextFiles\\Intro_ItemsList.txt
@@ -24,7 +24,7 @@ Option Three:  Search the room a little longer
 
 A hay bed covers the floor of a rickety wood structure.  The doors are wide open.  A man of great stature stands waiting on you.
 
-
-
+Goshen the Buyer
+1000
 
 500

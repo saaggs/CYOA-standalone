@@ -12,6 +12,7 @@ public:
 	void ActionsAndScenes();
 	void PlayerTakeItem(std::string Command);
 	void PlayerBuyItem(std::string Command);
+	void PlayerSellItem(std::string Command);
 	void PlayerDropItem(std::string Command);
 	void PlayerCommandEffect();
 	void PrintConnectingPages();

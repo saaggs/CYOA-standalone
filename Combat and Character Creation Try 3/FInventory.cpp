@@ -88,7 +88,7 @@ void FInventory::PlayerTakeItem(Item& object)
 	return PlayerInv.push_back(object);
 }
 
-void FInventory::PlayerRemoveItem(Item object)
+void FInventory::PlayerRemoveItem(Item& object)
 {
 	int ItemCount = 0;
 	int VectorSizeCount = 1;
@@ -133,7 +133,7 @@ void FInventory::ShopTakeItem(Item& object)
 	return ShopInv.push_back(object);
 }
 
-void FInventory::RoomInvRemoveItem(Item object)
+void FInventory::RoomInvRemoveItem(Item& object)
 {
 	//Find object position
 	//int it = FindItemIndexInRoom(Item.GetName());
@@ -163,23 +163,22 @@ void FInventory::ClearRoomInventory()
 	return;
 }
 
-void FInventory::NPCInvRemoveItem(Item& object)
+void FInventory::NPCInvRemoveItem(Item object)
 {
-	int ItemCount = 0;
+	int ItemNumber = 0;
 	int VectorSizeCount = 1;
 	for (Item item : NPCInv)
 	{
 		if (item.GetName() == object.GetName())
-		{
-			NPCInv.erase(NPCInv.begin() + ItemCount);
+		{	NPCInv.erase(NPCInv.begin() + ItemNumber);
 			return;
 		}
-		ItemCount++;
-		VectorSizeCount++;
 		if (NPCInv.size() == VectorSizeCount)
 		{
 			return;
 		}
+		ItemNumber++;
+		VectorSizeCount++;
 	}
 }
 

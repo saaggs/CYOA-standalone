@@ -47,10 +47,10 @@ void Page::Introduction()
 	Clr.DarkWhite();
 
 	Item BearSkinCloak;
-	BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60, 60);
+	BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60);
 	RmInv.TakeItem(BearSkinCloak);
 	Item BreadAndCheese;
-	BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2, 2);
+	BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2);
 	RmInv.TakeItem(BreadAndCheese);
 
 	for (Item Item : RmInv.Inventory)
@@ -185,13 +185,13 @@ void Page::GetPgInv()
 			std::string name = PageInventoryStats[0];
 			double weight = std::stod(PageInventoryStats[1]);
 			int value = std::stoi(PageInventoryStats[2]);
-			int cost = value;
+			//int cost = value;
 			std::string description = "There is nothing special about this item. \n\n";
 			if (PageInventoryStats[9] != "")
 			{
 				description = PageInventoryStats[9];
 			}
-			PgItem.CreateItem(name, weight, value, cost, description);
+			PgItem.CreateItem(name, weight, value, description);
 			//std::cout << "In GetPgInv() PgItem is : " << PgItem.GetName() << std::endl;
 			//std::cout << "RmInv.RoomTakeItem is running in GetPgInv() and taking : " << PgItem.GetName()
 			//	<< " PageInventoryList element : " << i << std::endl;
@@ -226,7 +226,6 @@ void Page::GetPgSaleInv()
 				{
 					text = line_;
 					PageInventoryStats.push_back(text);
-					//std::cout << "GetPgInv() pushing back : " << text << std::endl;
 				}
 				file_.close();
 			}
@@ -244,10 +243,7 @@ void Page::GetPgSaleInv()
 			{
 				description = PageInventoryStats[9];
 			}
-			PgItem.CreateItem(name, weight, value, cost, description);
-			//std::cout << "In GetPgInv() PgItem is : " << PgItem.GetName() << std::endl;
-			//std::cout << "RmInv.RoomTakeItem is running in GetPgInv() and taking : " << PgItem.GetName()
-			//	<< " PageInventoryList element : " << i << std::endl;
+			PgItem.CreateItem(name, weight, value, description);
 			NPCInventory.push_back(PgItem);
 			PageInventoryStats.clear();
 		}
@@ -257,7 +253,7 @@ void Page::GetPgSaleInv()
 
 void Page::GetPgGold()
 {
-
+	return;
 }
 
 
@@ -266,31 +262,28 @@ void Page::PrintPg()
 {
 	Clr.DarkGreen();
 	Cps.outputText(Pages[0]);
-	std::cout << std::endl << std::endl << std::endl;
-	/*
-	Clr.DarkYellow();
-	std::cout << "RmInv.GetRoomInv() size is : " << RmInv.GetRoomInv().size() << std::endl;
-	for (auto Element : RmInv.GetRoomInv())
+	std::cout << std::endl << std::endl;
+	if (Pages[1] != "")
 	{
-		Element.PrintSkinny();
+		Cps.outputText(Pages[1]);
+		std::cout << std::endl << std::endl;
 	}
-	std::cout << std::endl;
-	Clr.DarkCyan();
-	for (int i=10; i < Pages.size(); i+=2)
+	if (Pages[2] != "")
 	{
-		if (Pages[i] == "")
-		{
-			break;
-		}
-		else
-		{
-			std::cout << std::endl;
-			Cps.outputText(Pages[i]);
-		}
-
+		Cps.outputText(Pages[2]);
+		std::cout << std::endl << std::endl;
 	}
-	*/
-	//std::cout << std::endl;
+	if (Pages[3] != "")
+	{
+		Cps.outputText(Pages[3]);
+		std::cout << std::endl << std::endl;
+	}
+	if (Pages[4] != "")
+	{
+		Cps.outputText(Pages[4]);
+		std::cout << std::endl << std::endl;
+	}
+	std::cout << std::endl << std::endl;
 	return;
 }
 
