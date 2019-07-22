@@ -20,10 +20,14 @@ class Character: public Races
 public:
 	Character();
 	~Character();
-	std::string EnterRace(std::string Race = "Dragon Cat");
+	std::string EnterRace(std::string Race = "Human");
 	std::string CreateFirstName(std::string Name = "Drazen");
 	std::string CreateLastName(std::string LastName = "Greymont");
 	std::string CreateTitle(std::string Title = "Hunter");
+	std::string SetTitleFromPage(std::string PlayerTitle);
+	void ClearPlayerTitle();
+	std::string SetDesigFromPage(std::string PlayerDesig);
+	void ClearPlayerDesig();
 	std::string CreateDesig(std::string Desig = "Slayer of Mice");
 	void GenerateRace();
 	void GenerateName();
@@ -31,13 +35,23 @@ public:
 	std::string GetRace();
 	std::string GetName();
 	std::string GetFirstName();
+	std::string GetLastName();
 	std::string CreateFullName();
-	std::string GetFullName ();
+	std::string GetFullName();
+	std::string GetPlayerTitle();
+	std::string GetPlayerDesig();
 	std::string GenerateNPCName(std::string FileName);
 	std::string CreateIntroduction();
+	std::string GetPlayerIntroduction();
 	void PrintStartingStats();
 	int RollStat();
 	void RollStats();
+	int GetSTR();
+	int GetDEX();
+	int GetCON();
+	int GetINT();
+	int GetWIS();
+	int GetCHA();
 	void ApplyRaceStatMods();
 	void PrintCharacterSheet();
 	int GenerateStatMod(int Stat);
@@ -61,14 +75,14 @@ public:
 
 private:
 
-	std::string MyName = "Drazen";
-	std::string MyRace = "Human";
-	std::string MyFirstName = "Harold";
-	std::string MyLastName = "Greymayne";
-	std::string MyFullName = "Harold Gremayne";
-	std::string MyTitle = "King";
-	std::string MyDesig = "of Normandy";
-	std::string MyIntroduction = "KING, HAROLD GREYMAYNE -- OF NORMANDY";
+	std::string MyName = "";
+	std::string MyRace = "";
+	std::string MyFirstName = "";
+	std::string MyLastName = "";
+	std::string MyFullName = "";
+	std::string MyTitle = "";
+	std::string MyDesig = "";
+	std::string MyIntroduction = "";
 	int MySTR = 7;
 	int MySTRMod = -2;
 	int MyDEX = 7;

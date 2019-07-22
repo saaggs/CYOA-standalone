@@ -1,8 +1,8 @@
-You wake on a hay bed at the floor of a rickety wood structure.  There has been some bread and cheese tied in a burlap napsack is laying near the hay bed.  The doors swing open from the middle.  
-A giant of a man stands in the doorframe.  "Gather your things, we leave at once," says the man.  
-It is up to you to decide if you are going to leave with the man.
-He looks trust worthy...
-... then again
+You wake on a hay bed at the floor of a rickety wood structure.  There has been some bread and cheese tied in a burlap napsack is laying near the hay bed.  The doors swing open from the middle. 
+A giant of a man stands in the doorframe.  "Hello PLAYERTITLE, I believe your are PLAYERFIRSTNAME, PLAYERDESIG. Gather your things, we leave at once," says the man.   
+It is up to you to decide if you are going to leave with the man. 
+He looks trust worthy... 
+... then again 
 
 TextFiles\\Intro_ItemsForSaleList.txt
 TextFiles\\Intro_ItemsList.txt
@@ -28,3 +28,16 @@ Goshen the Buyer
 1000
 
 500
+
+
+
+
+
+
+
+
+
+Swashbuckler
+a 'very fat cat'
+
+

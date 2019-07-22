@@ -17,9 +17,12 @@ public:
 	void PlayerCommandEffect();
 	void PrintConnectingPages();
 	std::vector <Item> GetTempInv();
+	std::string GetCurrentTextFile();
 
 private:
 
+	//TODO save last read TextFile
+	std::string CurrentTextFile = "I'm Blank";
 	std::vector <Item> TempInv;
 	/*
 	std::vector <Item> PInv ;

@@ -1,0 +1,22 @@
+First Name
+Last Name
+Full Name
+Race
+Title
+Designation
+Introduction
+STR
+DEX
+CON
+INT
+WIS
+CHA
+Current HP
+Total HP
+Armor Equipped -- bool
+Weapon Equipped -- bool
+
+
+
+Current Page -- TextFile
+

@@ -7,12 +7,13 @@
 #include "Item.h"
 #include "FILESGame.h"
 #include "FInventory.h"
+#include "FCharacter.h"
 
 TextWrapAndCAPS Cps;
 TextColors Clr;
 FInventory RmInv;
 Item PgItem;
-//FILESGame IG;
+FILESGame FIG;
 
 
 
@@ -256,31 +257,47 @@ void Page::GetPgGold()
 	return;
 }
 
-
-
 void Page::PrintPg()
 {
 	Clr.DarkGreen();
-	Cps.outputText(Pages[0]);
+	if (Pages[39] != "")
+	{
+		FIG.SetPlayerTitle(Pages[39]);
+	}
+	if (Pages[40] != "")
+	{
+		FIG.SetPlayerDesig(Pages[40]);
+	}
+	std::string ModifiedText = "";
+	ModifiedText = FIG.ModifyParagraph(Pages[0]);
+	Cps.outputText(ModifiedText);
 	std::cout << std::endl << std::endl;
 	if (Pages[1] != "")
 	{
-		Cps.outputText(Pages[1]);
+		std::string ModifiedText = "";
+		ModifiedText = FIG.ModifyParagraph(Pages[1]);
+		Cps.outputText(ModifiedText);
 		std::cout << std::endl << std::endl;
 	}
 	if (Pages[2] != "")
 	{
-		Cps.outputText(Pages[2]);
+		std::string ModifiedText = "";
+		ModifiedText = FIG.ModifyParagraph(Pages[2]);
+		Cps.outputText(ModifiedText);
 		std::cout << std::endl << std::endl;
 	}
 	if (Pages[3] != "")
 	{
-		Cps.outputText(Pages[3]);
+		std::string ModifiedText = "";
+		ModifiedText = FIG.ModifyParagraph(Pages[3]);
+		Cps.outputText(ModifiedText);
 		std::cout << std::endl << std::endl;
 	}
 	if (Pages[4] != "")
 	{
-		Cps.outputText(Pages[4]);
+		std::string ModifiedText = "";
+		ModifiedText = FIG.ModifyParagraph(Pages[4]);
+		Cps.outputText(ModifiedText);
 		std::cout << std::endl << std::endl;
 	}
 	std::cout << std::endl << std::endl;

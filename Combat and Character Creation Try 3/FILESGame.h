@@ -14,12 +14,12 @@ public:
 	void Reset();	
 	void Clean();
 	void CreatePlayerCharacter();
+	std::string SetPlayerTitle(std::string PlayerTitle);
+	std::string SetPlayerDesig(std::string PlayerDesig);
 	void CreateNPCCharacter();
 	void WritePlayerCharacterToFile();
-	Character Player;
-	FInventory PlayerInv;
-	Storyline SectionOne;
-	Page Pge;
+	//TODO rewrite player character to file.
+	void RewritePlayerCharacterToFile();
 	std::vector <Character> Characters;
 	int GetNumberOfNPCs();
 	void GenerateNPCs();
@@ -41,6 +41,7 @@ public:
 	void PrintFightersStats(std::vector<Character> &Fighters);
 	void PrintVector();
 	void WhoseWho(std::vector<Character> Fighters, std::vector<Character> Characters);
+	std::string ModifyParagraph(std::string line);
 	void Story();
 
 private:

@@ -33,6 +33,10 @@ Storyline::~Storyline()
 
 void Storyline::ActionsAndScenes()
 {
+	//TODO IG.WritePlayerCharacterToFile() inputs current text file as below, but needs to update
+	//TODO CurrentTextFile requires additional slashes to write to file, so string must be modified
+	CurrentTextFile = "TextFiles\\\\Intro.txt";
+	IG.WritePlayerCharacterToFile();
 	Pg.Pg("TextFiles\\Intro.txt");
 	Pg.PrintPg();
 	Inv.ClearRoomInventory();
@@ -91,11 +95,11 @@ void Storyline::ActionsAndScenes()
 		PlayerCommandEffect();
 		if (PI.GetCommand() == "one")
 		{
-			//reset and find new saleprice and cost for items in player inv.
 			Pg.CleanInvList();
 			Pg.CleanInvStats();
 			Pg.PageInventory.clear();
 			Inv.ClearRoomInventory();
+			//TODO For navigation from save, Pg.Pg(TextFile) must be modified with extra slashes
 			Pg.Pg(Pg.Pages[9]);
 			if (Pg.Pages[7] == "")
 			{
@@ -469,7 +473,7 @@ void Storyline::PlayerCommandEffect()
 		Inv.CheckInventory();
 	}
 	else if (PI.GetCommand().find("look") == 0)
-	{
+	{ 
 		int count = 1;
 		std::string Command = PI.GetCommand();
 		Command = Command.substr(Command.find_first_of(" \t") + 1);
@@ -625,6 +629,11 @@ void Storyline::PrintConnectingPages()
 std::vector<Item> Storyline::GetTempInv()
 {
 	return TempInv;
+}
+
+std::string Storyline::GetCurrentTextFile()
+{
+	return std::string(CurrentTextFile);
 }
 
 

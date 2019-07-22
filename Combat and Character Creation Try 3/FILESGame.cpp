@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <ctime>
 #include <cstdlib>
 #include <windows.h>
@@ -17,6 +18,10 @@
 //#include "Page.h"
 
 TextColors Color;
+Character Player;
+//FInventory PlayerInventory;
+Storyline SectionOne;
+Page Pge;
 
 FILESGame::FILESGame()
 {
@@ -49,10 +54,10 @@ void FILESGame::CreatePlayerCharacter()
 	Player.CreateFirstName();
 	Player.CreateLastName();
 	Player.CreateFullName();
-	Player.EnterRace();
-	Player.CreateTitle();
-	Player.CreateDesig();
-	Player.CreateIntroduction();
+	//Player.EnterRace();
+	//Player.CreateTitle();
+	//Player.CreateDesig();
+	//Player.CreateIntroduction();
 	bool bRollAgain = false;
 	do
 	{
@@ -73,6 +78,20 @@ void FILESGame::CreatePlayerCharacter()
 	return;
 }
 
+std::string FILESGame::SetPlayerTitle(std::string PlayerTitle)
+{
+	Player.ClearPlayerTitle();
+	std::string Title = Player.SetTitleFromPage(PlayerTitle);
+	return std::string(Title);
+}
+
+std::string FILESGame::SetPlayerDesig(std::string PlayerDesig)
+{
+	Player.ClearPlayerDesig();
+	std::string Desig = Player.SetDesigFromPage(PlayerDesig);
+	return std::string(Desig);
+}
+
 void FILESGame::CreateNPCCharacter()
 {
 	return;
@@ -81,6 +100,36 @@ void FILESGame::CreateNPCCharacter()
 void FILESGame::WritePlayerCharacterToFile()
 {
 	//TODO Write character to File
+	std::ofstream PlayerFile ("SaveFiles/PlayerSave.txt");
+	if (PlayerFile.is_open())
+	{
+		//std::cout << "saving game \n\n";
+		PlayerFile << Player.GetFirstName() << std::endl;
+		PlayerFile << Player.GetLastName() << std::endl;
+		PlayerFile << Player.GetFullName() << std::endl;
+		PlayerFile << Player.GetRace() << std::endl;
+		PlayerFile << Player.GetPlayerTitle() << std::endl;
+		PlayerFile << Player.GetPlayerDesig() << std::endl;
+		PlayerFile << Player.GetPlayerIntroduction() << std::endl;
+		PlayerFile << Player.GetSTR() << std::endl;
+		PlayerFile << Player.GetDEX() << std::endl;
+		PlayerFile << Player.GetCON() << std::endl;
+		PlayerFile << Player.GetINT() << std::endl;
+		PlayerFile << Player.GetWIS() << std::endl;
+		PlayerFile << Player.GetCHA() << std::endl;
+		PlayerFile << Player.GetMyCurrentHP() << std::endl;
+		PlayerFile << Player.GetMyTotalHP() << std::endl;
+		PlayerFile << Player.CheckIfArmorEquipped() << std::endl;
+		PlayerFile << Player.CheckIfWeaponEquipped() << std::endl;
+		PlayerFile << "\n\n\n";
+		PlayerFile << SectionOne.GetCurrentTextFile() << std::endl;
+	}
+	return;
+}
+
+void FILESGame::RewritePlayerCharacterToFile()
+{
+	//Overwrite player's save to SaveFiles/PlayerSave.txt
 	return;
 }
 
@@ -438,6 +487,93 @@ void FILESGame::WhoseWho(std::vector<Character> Fighters, std::vector<Character>
 		else
 			std::cout << "Character " << i << " is " << Characters[i].GetFullName() << std::endl;
 	}
+}
+
+std::string FILESGame::ModifyParagraph(std::string line)
+{
+	std::vector<std::string> Words;
+	std::string ModifiedLine;
+	std::string word = "";
+	for (auto x : line)
+	{
+		if (x == ' ')
+		{
+			if (word != "")
+			{
+				Words.push_back(word);
+			}
+			word = "";
+		}
+		else
+		{
+			word = word + x;
+		}
+	}
+	for (auto lineword : Words)
+	{
+		if (lineword == "PLAYERFIRSTNAME")
+		{
+			lineword = Player.GetFirstName();
+		}
+		if (lineword == "PLAYERFIRSTNAME,")
+		{
+			lineword = Player.GetFirstName() + ",";
+		}
+		if (lineword == "PLAYERFIRSTNAME.")
+		{
+			lineword = Player.GetFirstName() + ". ";
+		}
+		if (lineword == "PLAYERLASTNAME")
+		{
+			lineword = Player.GetLastName();
+		}
+		if (lineword == "PLAYERLASTNAME,")
+		{
+			lineword = Player.GetLastName() + ",";
+		}
+		if (lineword == "PLAYERLASTNAME.")
+		{
+			lineword = Player.GetLastName() + ". ";
+		}
+		if (lineword == "PLAYERFULLNAME")
+		{
+			lineword = Player.GetFullName();
+		}
+		if (lineword == "PLAYERFULLNAME,")
+		{
+			lineword = Player.GetFullName() + ",";
+		}
+		if (lineword == "PLAYERFULLNAME.")
+		{
+			lineword = Player.GetFullName() + ". ";
+		}
+		if (lineword == "PLAYERTITLE")
+		{
+			lineword = Player.GetPlayerTitle();
+		}
+		if (lineword == "PLAYERTITLE,")
+		{
+			lineword = Player.GetPlayerTitle() + ",";
+		}
+		if (lineword == "PLAYERTITLE.")
+		{
+			lineword = Player.GetPlayerTitle() + ". ";
+		}
+		if (lineword == "PLAYERDESIG")
+		{
+			lineword = Player.GetPlayerDesig();
+		}
+		if (lineword == "PLAYERDESIG,")
+		{
+			lineword = Player.GetPlayerDesig() + ",";
+		}
+		if (lineword == "PLAYERDESIG.")
+		{
+			lineword = Player.GetPlayerDesig() + ". ";
+		}
+		ModifiedLine += lineword + " ";
+	}
+	return ModifiedLine;
 }
 
 void FILESGame::Story()

@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include "Item.h"
+#include "FCharacter.h"
 
 class Page
 {

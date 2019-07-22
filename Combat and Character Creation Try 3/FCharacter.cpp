@@ -106,6 +106,11 @@ std::string Character::GetFirstName()
 	return std::string(MyFirstName);
 }
 
+std::string Character::GetLastName()
+{
+	return std::string(MyLastName);
+}
+
 std::string Character::CreateLastName(std::string LastName)
 {
 	C.Green();
@@ -132,6 +137,21 @@ std::string Character::GetName()
 std::string Character::GetFullName()
 {
 	return std::string(MyFullName);
+}
+
+std::string Character::GetPlayerTitle()
+{
+	return std::string(MyTitle);
+}
+
+std::string Character::GetPlayerDesig()
+{
+	return std::string(MyDesig);
+}
+
+std::string Character::GetPlayerIntroduction()
+{
+	return std::string(MyIntroduction);
 }
 
 std::string Character::GenerateNPCName(std::string FileName)
@@ -173,6 +193,7 @@ std::string Character::CreateTitle(std::string Title)
 	std::cout << " -- ";
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
 	std::getline(std::cin, MyTitle);
+	
 	if (MyTitle.length() <= 1)
 	{
 		return MyTitle = Title;
@@ -183,6 +204,30 @@ std::string Character::CreateTitle(std::string Title)
 	}
 	else
 	return MyTitle;
+}
+
+std::string Character::SetTitleFromPage(std::string PlayerTitle)
+{
+	MyTitle = PlayerTitle;
+	return std::string(MyTitle);
+}
+
+void Character::ClearPlayerTitle()
+{
+	MyTitle = "";
+	return;
+}
+
+std::string Character::SetDesigFromPage(std::string PlayerDesig)
+{
+	MyDesig = PlayerDesig;
+	return std::string(MyDesig);
+}
+
+void Character::ClearPlayerDesig()
+{
+	MyDesig = "";
+	return;
 }
 
 std::string Character::CreateDesig(std::string Desig)
@@ -231,6 +276,36 @@ void Character::RollStats()
 	MyWIS = RollStat();
 	MyCHA = RollStat();
 	return;
+}
+
+int Character::GetSTR()
+{
+	return MySTR;
+}
+
+int Character::GetDEX()
+{
+	return MyDEX;
+}
+
+int Character::GetCON()
+{
+	return MyCON;
+}
+
+int Character::GetINT()
+{
+	return MyINT;
+}
+
+int Character::GetWIS()
+{
+	return MyWIS;
+}
+
+int Character::GetCHA()
+{
+	return MyCHA;
 }
 
 void Character::ApplyRaceStatMods()
