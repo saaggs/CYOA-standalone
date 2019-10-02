@@ -1,10 +1,18 @@
 Bread and Cheese
+food
 .25
 2
-
-
-
-
-
-
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
 A nice cheddar cheese, slightly moldy, and a roll of white bread that is hard as a rock.

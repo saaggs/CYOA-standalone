@@ -1,0 +1,19 @@
+Long Sword
+weapon
+5.0
+350
+1
+0
+6
+0
+0
+0
+0
+0
+0
+0
+0
+1
+0
+This Long Sword is of poor quality and quite brittle.
+

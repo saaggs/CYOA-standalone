@@ -27,5 +27,24 @@ Room Description : string -- This will display when a player looks around after 
 Friendly NPC : string -- if an NPC can purchase items from the player put NPC name here.
 NPC Gold : int -- if NPC then put the amount of gold they have to spend here
 
-Gold given to player : int
+Gold given to player : int **if none enter 0
 Gold player can find in a room : int
+
+
+
+
+
+
+
+
+Player stuff -- set player title -- string
+set player designation -- string
+
+
+
+
+
+
+
+
+File name for save progress -- needs to have four slashes TextFiles\\\\FileName.txt

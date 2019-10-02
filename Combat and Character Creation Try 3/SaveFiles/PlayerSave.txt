@@ -1,21 +1,21 @@
 Drazen
 Greymont
 Drazen Greymont
+Human
 
+Swashbuckler
 
-
-
-17
-12
-9
+19
 15
-11
-11
-9
-9
+10
+17
+18
+7
+10
+10
 0
 0
 
 
 
-TextFiles\\Intro.txt
+Start

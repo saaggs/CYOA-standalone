@@ -1,0 +1,18 @@
+List of equippable items and number that can be equipped
+armor : 1
+belt : 1
+cape : 1
+cloak : 1
+gloves : 1
+head : 1
+hood : 1	
+neck : 1
+pants : 1	
+piercings : 2 not sure about this one
+ring : 2	
+robe : 1
+shirt : 1
+feet : 1
+tabbard : 1
+tattoo : 2 not sure about this one either 
+wrists : 1

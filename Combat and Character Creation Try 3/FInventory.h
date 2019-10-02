@@ -10,10 +10,14 @@ public:
 	~FInventory();
 	void GetInv();
 	void CheckInventory();
+	void CheckEquipped();
 	//int GetCoin(int coin);
 	void CleanInv();
 	//access player inventory vector
 	std::vector <Item> GetPlayerInv();
+	void ClearPlayerInv();
+	std::vector <Item> GetPlayerEquippedInv();
+	void ClearPlayerEquippedInv();
 	//access room inventory vector
 	std::vector <Item> GetRoomInv();
 	//access NPC1 inventory vector
@@ -24,8 +28,18 @@ public:
 	std::vector <Item> GetShopInv();
 	//player take item
 	void PlayerTakeItem(Item& object);
+	void PlayerEquipItem(Item& object);
+	void PlayerUnequipItem(Item& object);
 	//Player drop item
 	void PlayerRemoveItem(Item& object);
+	void ClearPlayerInvList();
+	void SetPlayerInvList();
+	//TODO move SetPlayerEquippedInvList to FILESGame
+	void ClearPlayerEquippedInvList();
+	void SetPlayerEquippedInvList();
+	void CreatePlayerInvFromSave();
+	void CreatePlayerEquippedInvFromSave();
+	void SharePlayerEq(Item item);
 	//room take item
 	void RoomTakeItem(Item& object);
 	//NPC take item
@@ -37,6 +51,7 @@ public:
 	void RoomInvRemoveItem(Item& object);
 	//clear room inventory
 	void ClearRoomInventory();
+	void ClearNPCInventory();
 	void NPCInvRemoveItem(Item object);
 	int GetGold(int num);
 	int LooseGold(int num);
@@ -44,8 +59,10 @@ public:
 	int GetSilver(int num);
 	int GetCopper(int num);
 	int CheckMoney();
+	int GetPlayerGold();
+	void PlayerSaveGold();
+	void PlayerSetGold();
 	bool CheckEnoughGold(int num);
-
 	std::vector <Item> Inventory;
 	void TakeItem(Item &object);
 
@@ -53,6 +70,11 @@ public:
 private: 
 	//PlayerInv Vector
 	std::vector <Item> PlayerInv;
+	std::vector <Item> PlayerEquippedInv;
+	std::vector <std::string> PlayerInvList;
+	std::vector <std::string> PlayerEquippedInvList;
+	std::vector <std::string> PlayerInvStats;
+	std::vector <std::string> PlayerEquippedInvStats;
 	//RoomInv Vector
 	std::vector <Item> RoomInv;
 	//NPC1Inv Vector

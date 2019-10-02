@@ -13,10 +13,10 @@ WIS
 CHA
 Current HP
 Total HP
-Armor Equipped -- bool
-Weapon Equipped -- bool
+Armor Equipped -- bool -- 0 = false
+Weapon Equipped -- bool -- 0 = false
 
 
 
-Current Page -- TextFile
+Current Page -- TextFile -- Start for restart	
 

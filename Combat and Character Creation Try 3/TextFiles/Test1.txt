@@ -1,11 +1,11 @@
-Here is the first mission of Luther.  Luther does hereby try and scrape the floor with Munder.  Munder does not take kindly to this insult and replies by giving Luther a fistfull.  The commotion is in full force.  The crowd seems to forgotten about you.
+Here is the first mission of Luther.  Luther does hereby try and scrape the floor with Munder.  Munder does not take kindly to this insult and replies by giving Luther a fistfull.  The commotion is in full force.  The crowd seems to have forgotten about you. 
 
 
 
 
 
-TextFiles\\Test1_ItemsList.txt
-
+TextFiles\\Test1_ItemsForSaleList.txt
+TextFiles\\Test1_ItemsTakeList.txt
 
 TextFiles\\Test1A.txt
 Option One:  Make your way to the bar
@@ -23,3 +23,29 @@ Option Three:  Leave the Cellar
 
 
 none
+
+none
+0
+
+0
+0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TextFiles\\Test1.txt

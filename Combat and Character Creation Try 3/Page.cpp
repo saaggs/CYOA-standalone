@@ -48,10 +48,10 @@ void Page::Introduction()
 	Clr.DarkWhite();
 
 	Item BearSkinCloak;
-	BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60);
+	//BearSkinCloak.CreateItem("Bear Skin Cloak", 2, 60);
 	RmInv.TakeItem(BearSkinCloak);
 	Item BreadAndCheese;
-	BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2);
+	//BreadAndCheese.CreateItem("Bread and Cheese", 0.25, 2);
 	RmInv.TakeItem(BreadAndCheese);
 
 	for (Item Item : RmInv.Inventory)
@@ -180,19 +180,63 @@ void Page::GetPgInv()
 			}
 			else
 			{
-				std::cout << "File did not open \n\n";
+				//std::cout << "File did not open \n\n";
 				return;
 			}
 			std::string name = PageInventoryStats[0];
-			double weight = std::stod(PageInventoryStats[1]);
-			int value = std::stoi(PageInventoryStats[2]);
+			std::string type = PageInventoryStats[1];
+			double weight = std::stod(PageInventoryStats[2]);
+			int value = std::stoi(PageInventoryStats[3]);
 			//int cost = value;
-			std::string description = "There is nothing special about this item. \n\n";
-			if (PageInventoryStats[9] != "")
+			bool IsEquippable = false;
+			if (PageInventoryStats[4] == "1")
 			{
-				description = PageInventoryStats[9];
+				IsEquippable = true;
 			}
-			PgItem.CreateItem(name, weight, value, description);
+			int WeaponBonus = std::stoi(PageInventoryStats[5]);
+			int WeaponDamage = std::stoi(PageInventoryStats[6]);
+			int DamageBonus = std::stoi(PageInventoryStats[7]);
+			int ArmorBonus = std::stoi(PageInventoryStats[8]);
+			int STRBonus = std::stoi(PageInventoryStats[9]);
+			int DEXBonus = std::stoi(PageInventoryStats[10]);
+			int CONBonus = std::stoi(PageInventoryStats[11]);
+			int INTBonus = std::stoi(PageInventoryStats[12]);
+			int WISBonus = std::stoi(PageInventoryStats[13]);
+			int CHABonus = std::stoi(PageInventoryStats[14]);
+			bool IsWeapon = false;
+			if (PageInventoryStats[15] == "1")
+			{
+				IsWeapon = true;
+			}
+			bool IsArmor = false;
+			if (PageInventoryStats[16] == "1")
+			{
+				IsArmor = true;
+			}
+			std::string description = "There is nothing special about this item. \n\n";
+			if (PageInventoryStats[17] != "")
+			{
+				description = PageInventoryStats[17];
+			}
+			PgItem.CreateItem(
+				name, 
+				type, 
+				weight, 
+				value, 
+				IsEquippable, 
+				WeaponBonus, 
+				WeaponDamage, 
+				DamageBonus, 
+				ArmorBonus,
+				STRBonus,
+				DEXBonus,
+				CONBonus,
+				INTBonus,
+				WISBonus,
+				CHABonus,
+				IsWeapon, 
+				IsArmor, 
+				description);
 			//std::cout << "In GetPgInv() PgItem is : " << PgItem.GetName() << std::endl;
 			//std::cout << "RmInv.RoomTakeItem is running in GetPgInv() and taking : " << PgItem.GetName()
 			//	<< " PageInventoryList element : " << i << std::endl;
@@ -204,7 +248,8 @@ void Page::GetPgInv()
 }
 
 void Page::GetPgSaleInv()
-{//std::cout << "inventory list size " << PageInventoryList.size() << std::endl;
+{
+	//std::cout << "inventory list size " << PageInventoryList.size() << std::endl;
 	if (PageInventoryList.size() == 0)
 	{
 		PageInventoryStats.clear();
@@ -232,19 +277,64 @@ void Page::GetPgSaleInv()
 			}
 			else
 			{
-				std::cout << "File did not open \n\n";
+				std::cout << "File did not open \n";
+				std::cout << "This is commonly caused by incorrect item file name. \n\n";
 				return;
 			}
 			std::string name = PageInventoryStats[0];
-			double weight = std::stod(PageInventoryStats[1]);
-			int value = std::stoi(PageInventoryStats[2]);
+			std::string type = PageInventoryStats[1];
+			double weight = std::stod(PageInventoryStats[2]);
+			int value = std::stoi(PageInventoryStats[3]);
 			int cost = PgItem.FindCost(value);
-			std::string description = "There is nothing special about this item. \n\n";
-			if (PageInventoryStats[9] != "")
+			bool IsEquippable = false;
+			if (PageInventoryStats[4] == "1")
 			{
-				description = PageInventoryStats[9];
+				IsEquippable = true;
 			}
-			PgItem.CreateItem(name, weight, value, description);
+			int WeaponBonus = std::stoi(PageInventoryStats[5]);
+			int WeaponDamage = std::stoi(PageInventoryStats[6]);
+			int DamageBonus = std::stoi(PageInventoryStats[7]);
+			int ArmorBonus = std::stoi(PageInventoryStats[8]);
+			int STRBonus = std::stoi(PageInventoryStats[9]);
+			int DEXBonus = std::stoi(PageInventoryStats[10]);
+			int CONBonus = std::stoi(PageInventoryStats[11]);
+			int INTBonus = std::stoi(PageInventoryStats[12]);
+			int WISBonus = std::stoi(PageInventoryStats[13]);
+			int CHABonus = std::stoi(PageInventoryStats[14]);
+			bool IsWeapon = false;
+			if (PageInventoryStats[15] == "1")
+			{
+				IsWeapon = true;
+			}
+			bool IsArmor = false;
+			if (PageInventoryStats[16] == "1")
+			{
+				IsArmor = true;
+			}
+			std::string description = "There is nothing special about this item. \n\n";
+			if (PageInventoryStats[17] != "")
+			{
+				description = PageInventoryStats[17];
+			}
+			PgItem.CreateItem(
+				name, 
+				type, 
+				weight, 
+				value, 
+				IsEquippable, 
+				WeaponBonus, 
+				WeaponDamage, 
+				DamageBonus, 
+				ArmorBonus,
+				STRBonus,
+				DEXBonus,
+				CONBonus,
+				INTBonus,
+				WISBonus,
+				CHABonus,
+				IsWeapon, 
+				IsArmor, 
+				description);
 			NPCInventory.push_back(PgItem);
 			PageInventoryStats.clear();
 		}

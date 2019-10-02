@@ -102,15 +102,17 @@ void PlayIntro()
 void PlayGame()
 {
 	//Character Player;
+	/*
 	ILESGame.CreatePlayerCharacter();
 	ILESGame.Clean();
+	*/
 
 	//bool bKeepPlaying = false;
 	//do
 	//{
 		system("CLS");
-		ILESGame.GenerateNPCs();
-		ILESGame.Clean();
+		//ILESGame.GenerateNPCs();
+		//ILESGame.Clean();
 		ILESGame.Story();  //TODO Story Line, with hopefully add combat.
 		//ILESGame.Combat();
 		//bKeepPlaying = ILESGame.AskToKeepPlaying();
@@ -167,7 +169,7 @@ void PlayGame()
 //Character.Get() commands.
 //Storyline must create an instance of the FILESGame and call 
 //CreatePlayerCharacter from there.
-//FILESGame can also has a method Combat.  NPC's need to be created 
+//FILESGame can also have a method for Combat.  NPC's need to be created 
 //Inside that method.
 //Combat should auto initiate on a page.  A command to confirm the player
 //is ready for combat is needed.
@@ -190,10 +192,21 @@ void PlayGame()
 //**  be an issue.																**
 //================================================================================
 
+//TOOD Needs testing, but believe the page and inventory lists all update items with weapon or 
+//armor stats if any, those that don't have stats need to be filled in with 0's.  Can equip armor and 
+//weapons and the game should know if a weapon or armor is already equipped.
+//TODO Need to see what happens to PlayerEquippmentSave.txt when items are equipped then unequipped.
+//TODO file not open error after retrieving sale inventory from page, need to check.
+//TODO need to add eqiupped items stats to character stats for combat.
+//TODO instead of rewriting page data and then having to keep track and replace it if reset, create a
+//temporary page that changes based on player activity and load that file when reloading.  Will need
+//a temp file for inventories as well...
+//TODO Page Files now update based on Player choices, but need to reset them if the game is reset.
 
-//TODO Paragraphs 1 thru 5 from TextFile Lines 1 thru 5 must be initiated
-
-//TODO Paragraphs need to replace placeholders with character names and titles
+//TODO if more than one item of same kind per page at different prices, can only buy the first item
+//This might be okay because same kind items shouldn't be different prices, but the error makes 
+//it clear that if same name items have two different prices there is no way to select the 
+//second item.
 
 //TODO If a page doesn't have player choices, then need a way to advance once player is ready
 
@@ -211,10 +224,6 @@ void PlayGame()
 //**  These items aren't needed for textfiles  **
 //=============================================== 
 
-//TODO need to create character save file and a way for the game to 
-//continue where it left off.  
-//Write character stats, inventory and the file name of the current
-//text file into a separate text file.
 
 //=======================================================================================================
 
@@ -281,5 +290,10 @@ void PlayGame()
 //Hard Days Night -- Beatles
 //Smoke on the Water -- Deep Purple
 //Ask for Shienske's list
+
+//Song lyrics
+//This one's from Mike Rush "You Got Me; Always" ... "Your With Me Always" ... "You Have Me Always"
+//Ben Garms ... Drummer Mike Knows, Duff Rose Mceegan
+
 
 //=======================================================================================================

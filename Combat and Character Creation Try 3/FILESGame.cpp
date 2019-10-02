@@ -12,15 +12,19 @@
 #include <stdexcept>
 #include <cmath>
 #include <cstdio>
+#include <limits>
 #include "FILESGame.h"
 #include "TextColors.h"
 #include "FInventory.h"
+#include "Item.h"
 //#include "Page.h"
+#undef max
 
 TextColors Color;
 Character Player;
-//FInventory PlayerInventory;
+FInventory PlayerInventory;
 Storyline SectionOne;
+Item EqItem;
 Page Pge;
 
 FILESGame::FILESGame()
@@ -54,7 +58,7 @@ void FILESGame::CreatePlayerCharacter()
 	Player.CreateFirstName();
 	Player.CreateLastName();
 	Player.CreateFullName();
-	//Player.EnterRace();
+	Player.SetPlayerRace("Human");
 	//Player.CreateTitle();
 	//Player.CreateDesig();
 	//Player.CreateIntroduction();
@@ -67,15 +71,30 @@ void FILESGame::CreatePlayerCharacter()
 		std::cout << std::endl;
 		bRollAgain = AskToRollAgain();
 	} while (bRollAgain == false);
-	Player.GenerateStatMods();
 	Player.GenerateRaceStatMods();
 	Player.ApplyRaceStatMods();
 	//Player.PrintRaceStatMods();
+	ApplyBonusesAndTotalPlayerStats();
 	Player.GenerateStatMods();
 	Player.GenerateStartingHP();
 	Player.FinishStats();
 	Player.PrintCharacterSheet();
+	Player.PlayerAbilities();
 	return;
+}
+
+void FILESGame::UpdatePlayerCharacter()
+{
+	ApplyBonusesAndTotalPlayerStats();
+	Player.GenerateStatMods();
+	Player.FinishStats();
+	//Player.PrintCharacterSheet();
+	return;
+}
+
+void FILESGame::PrintPlayerSheet()
+{
+	Player.PrintCharacterSheet();
 }
 
 std::string FILESGame::SetPlayerTitle(std::string PlayerTitle)
@@ -99,11 +118,12 @@ void FILESGame::CreateNPCCharacter()
 
 void FILESGame::WritePlayerCharacterToFile()
 {
-	//TODO Write character to File
-	std::ofstream PlayerFile ("SaveFiles/PlayerSave.txt");
+	std::ofstream PlayerFile ("SaveFiles\\PlayerSave.txt");
 	if (PlayerFile.is_open())
 	{
+		//std::fstream file("SaveFiles\\PlayerSave.txt");
 		//std::cout << "saving game \n\n";
+		//if ()
 		PlayerFile << Player.GetFirstName() << std::endl;
 		PlayerFile << Player.GetLastName() << std::endl;
 		PlayerFile << Player.GetFullName() << std::endl;
@@ -127,9 +147,251 @@ void FILESGame::WritePlayerCharacterToFile()
 	return;
 }
 
-void FILESGame::RewritePlayerCharacterToFile()
+void FILESGame::ReadPlayerCharacterFromFile()
 {
-	//Overwrite player's save to SaveFiles/PlayerSave.txt
+	std::ifstream PlayerFile("SaveFiles\\PlayerSave.txt");
+	std::string Line = "";
+	std::string text = "";
+	if (PlayerFile.is_open())
+	{
+		while (std::getline(PlayerFile, Line))
+		{
+			text = Line;
+			PlayerStatus.push_back(Line);
+		}
+		PlayerFile.close();
+	}
+	Player.SetFirstName(PlayerStatus[0]);
+	Player.SetLasName(PlayerStatus[1]);
+	Player.SetFullName(PlayerStatus[2]);
+	Player.SetRace(PlayerStatus[3]);
+	Player.SetPlayerTitle(PlayerStatus[4]);
+	Player.SetPlayerDesig(PlayerStatus[5]);
+	Player.SetPlayerIntroduction(PlayerStatus[6]);
+	Player.SetSTR(std::stoi(PlayerStatus[7]));
+	Player.SetDEX(std::stoi(PlayerStatus[8]));
+	Player.SetCON(std::stoi(PlayerStatus[9]));
+	Player.SetINT(std::stoi(PlayerStatus[10]));
+	Player.SetWIS(std::stoi(PlayerStatus[11]));
+	Player.SetCHA(std::stoi(PlayerStatus[12]));
+	Player.SetPlayerTotalHP(std::stoi(PlayerStatus[13]));
+	Player.SetPlayerCurrentHP(std::stoi(PlayerStatus[14])); 
+	UpdatePlayerCharacter();
+	//TODO Player.SetPlayerDamageModifier(0) ... This must be read from a different file 
+	//TODO equipped items need to modify player stats
+	Player.SetArmorEquipped(PlayerStatus[15]);
+	Player.SetWeaponEquipped(PlayerStatus[16]);
+	//TODO if weapon is equiped add modifier otherwise modifier is 0
+	return;
+}
+
+void FILESGame::SetPlayerEqInvList()
+{
+	PlayerEqList.clear();
+	std::ifstream PlayerEquippedInventory("SaveFiles\\PlayerEquipmentSave.txt");
+	std::string Line = "";
+	std::string text = "";
+	if (PlayerEquippedInventory.is_open())
+	{
+		//std::vector <int> PGold;
+		while (std::getline(PlayerEquippedInventory, Line))
+		{
+			text = Line;
+			PlayerEqList.push_back(Line);
+		}
+		return;
+	}
+}
+
+void FILESGame::CreatePlayerEqInvFromSave()
+{
+	SetPlayerEqInvList();
+	if (PlayerEqList.size() == 0)
+	{
+		PlayerEqStats.clear();
+		PlayerEq.clear();
+		//RmInv.ClearRoomInventory();
+	}
+	else
+	{
+		PlayerEqStats.clear();
+		PlayerEq.clear();
+		for (int i = 0; i <= PlayerEqList.size() - 1; i++)
+		{
+			std::string line_ = "";
+			std::string text = "";
+			std::ifstream file_(PlayerEqList[i]);
+			if (file_.is_open())
+			{
+				while (std::getline(file_, line_))
+				{
+					text = line_;
+					PlayerEqStats.push_back(text);
+					//std::cout << "GetPgInv() pushing back : " << text << std::endl;
+				}
+				file_.close();
+			}
+			else
+			{
+				std::cout << "File did not open \n\n";
+				return;
+			}
+			std::string name = PlayerEqStats[0];
+			std::string type = PlayerEqStats[1];
+			double weight = std::stod(PlayerEqStats[2]);
+			int value = std::stoi(PlayerEqStats[3]);
+			//int cost = value;
+			bool IsEquippable = false;
+			if (PlayerEqStats[4] == "1")
+			{
+				IsEquippable = true;
+			}
+			int WeaponBonus = std::stoi(PlayerEqStats[5]);
+			int WeaponDamage = std::stoi(PlayerEqStats[6]);
+			int DamageBonus = std::stoi(PlayerEqStats[7]);
+			int ArmorBonus = std::stoi(PlayerEqStats[8]);
+			int STRBonus = std::stoi(PlayerEqStats[9]);
+			int DEXBonus = std::stoi(PlayerEqStats[10]);
+			int CONBonus = std::stoi(PlayerEqStats[11]);
+			int INTBonus = std::stoi(PlayerEqStats[12]);
+			int WISBonus = std::stoi(PlayerEqStats[13]);
+			int CHABonus = std::stoi(PlayerEqStats[14]);
+			bool IsWeapon = false;
+			if (PlayerEqStats[15] == "1")
+			{
+				IsWeapon = true;
+			}
+			bool IsArmor = false;
+			if (PlayerEqStats[16] == "1")
+			{
+				IsArmor = true;
+			}
+			std::string description = "There is nothing special about this item. \n\n";
+			if (PlayerEqStats[17] != "")
+			{
+				description = PlayerEqStats[17];
+			}
+			EqItem.CreateItem(name, 
+				type, 
+				weight, 
+				value, 
+				IsEquippable, 
+				WeaponBonus, 
+				WeaponDamage, 
+				DamageBonus, 
+				ArmorBonus,
+				STRBonus,
+				DEXBonus,
+				CONBonus,
+				INTBonus,
+				WISBonus,
+				CHABonus,
+				IsWeapon, 
+				IsArmor, 
+				description);
+			//std::cout << "In GetPgInv() PgItem is : " << PgItem.GetName() << std::endl;
+			//std::cout << "RmInv.RoomTakeItem is running in GetPgInv() and taking : " << PgItem.GetName()
+			//	<< " PageInventoryList element : " << i << std::endl;
+			PlayerEq.push_back(EqItem);
+			PlayerEqStats.clear();
+		}
+	}
+}
+
+std::vector<Item> FILESGame::GetPlayerEq()
+{
+	return PlayerEq;
+}
+
+void FILESGame::ClearPlayerEq()
+{
+	PlayerEq.clear();
+	return;
+}
+
+void FILESGame::SetPlayerEqBonuses()
+{
+	//TODO if more than one item equipped must not override one item with the next item.
+	int TempBonusToHit = 0;
+	int TempHitDie = 0;
+	int TempBonusDamage = 0;
+	int TempBonusAC = 0;
+	int TempSTRBonus = 0;
+	int TempDEXBonus = 0;
+	int TempCONBonus = 0;
+	int TempINTBonus = 0;
+	int TempWISBonus = 0;
+	int TempCHABonus = 0;
+	for (auto item : PlayerEq)
+	{
+		TempBonusToHit = TempBonusToHit + item.GetWeaponBonus();
+		TempHitDie = TempHitDie + item.GetWeaponDamage();
+		TempBonusDamage = TempBonusDamage + item.GetDamageBonus();
+		TempBonusAC = TempBonusAC + item.GetArmorBonus();
+		TempSTRBonus = TempSTRBonus + item.GetSTRBonus();
+		TempDEXBonus = TempDEXBonus + item.GetDEXBonus();
+		TempCONBonus = TempCONBonus + item.GetCONBonus();
+		TempINTBonus = TempINTBonus + item.GetINTBonus();
+		TempWISBonus = TempWISBonus + item.GetWISBonus();
+		TempCHABonus = TempCHABonus + item.GetCHABonus();
+	}
+	Player.SetBonusToHit(TempBonusToHit);
+	Player.SetHitDice(TempHitDie);
+	Player.SetBonusDamage(TempBonusDamage);
+	Player.SetBonusAC(TempBonusAC);
+	Player.SetSTRBonus(TempSTRBonus);
+	Player.SetDEXBonus(TempDEXBonus);
+	Player.SetCONBonus(TempCONBonus);
+	Player.SetINTBonus(TempINTBonus);
+	Player.SetWISBonus(TempWISBonus);
+	Player.SetCHABonus(TempCHABonus);
+	if (Player.GetMyHitDice() == 0)	
+	{
+		//TODO Think about setting this via a text file that contains game rules
+		Player.SetHitDice(4);
+	}
+	std::cout << 
+		"Bonus to Hit : " << Player.GetMyBonusToHit() << "\n" <<
+		"Hit Dice : " << Player.GetMyHitDice() << "\n" <<
+		"Bonus Damage : " << Player.GetMyBonusDamage() << "\n" <<
+		"Bonus AC : " << Player.GetMyBonusAC() << std::endl << 
+		"Bonus STR : " << Player.GetSTRBonus() << std::endl <<
+		"Bonus DEX : " << Player.GetDEXBonus() << std::endl <<
+		"Bonus CON : " << Player.GetCONBonus() << std::endl <<
+		"Bonus INT : " << Player.GetINTBonus() << std::endl <<
+		"Bonus WIS : " << Player.GetWISBonus() << std::endl <<
+		"Bonus CHA : " << Player.GetCHABonus() << std::endl;
+}
+
+void FILESGame::ResetPlayerEqBonuses()
+{
+		Player.SetBonusToHit(0);
+		Player.SetHitDice(4);
+		Player.SetBonusDamage(0);
+		Player.SetBonusAC(0);
+		Player.SetSTRBonus(0);
+		Player.SetDEXBonus(0);
+		Player.SetCONBonus(0);
+		Player.SetINTBonus(0);
+		Player.SetWISBonus(0);
+		Player.SetCHABonus(0);
+		return;
+}
+
+void FILESGame::ApplyBonusesAndTotalPlayerStats()
+{
+	Player.SetTotalSTR();
+	Player.SetTotalDEX();
+	Player.SetTotalCON();
+	Player.SetTotalINT();
+	Player.SetTotalWIS();
+	Player.SetTotalCHA();
+	//Player.GenerateRaceStatMods();
+	//Player.ApplyRaceStatMods();
+	Player.GenerateStatMods();
+	//Player.PrintRaceStatMods();
+	//Player.GenerateStatMods();
+	Player.FinishStats();
 	return;
 }
 
@@ -387,6 +649,10 @@ void FILESGame::Attack(Character &Attacker, Character &Defender)
 		std::cout << Attacker.GetFullName() << "'s " << AttackRoll;
 		if (AttackRoll > Defender.GetMyAC())
 		{
+			//TODO The damage die needs to be set by the weapon or default to race through the different 
+			//files.  If weapon then Items\\*.txt needs to set, if race then PlayerSave.txt should set.
+			//TODO also need to add weapons bonusdamage modifier.
+			//Could add modifier by creating player stat to add if weapon is equiped.  Maybe
 			if (Attacker.GetRace() == "Dragon")
 				DoDamage(Attacker, Defender, 6);
 			if (Attacker.GetRace() == "Dragon Cat")
@@ -582,4 +848,26 @@ void FILESGame::Story()
 	//RoomInv vector.  need that to happen in order to not have to create page inventory in Storyline.cpp 
 	SectionOne.ActionsAndScenes();
 }
+
+///*
+std::fstream& FILESGame::GotoLine(std::fstream& file, unsigned int num)
+{
+	//for search once have internet connection
+	//file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');  
+	file.seekg(std::ios::beg);
+	for (int i = 0; i < num - 1; ++i)
+	{
+		file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+	return file;
+}
+void FILESGame::ShareEquippedInvFromInv(Item item)
+{
+	//PlayerEqList.clear();
+	//PlayerEqStats.clear();
+	//PlayerEq.clear();
+	PlayerEq.push_back(item);
+	return;
+}
+//*/
 

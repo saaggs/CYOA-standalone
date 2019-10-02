@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include "Item.h"
 #include "TextColors.h"
 #include "TextWrapAndCAPS.h"
@@ -32,6 +33,11 @@ std::string Item::GetName()
 std::string Item::GetItemDescription()
 {
 	return ItemDescription;
+}
+
+std::string Item::GetItemType()
+{
+	return ItemType;
 }
 
 int Item::GetValue()
@@ -123,6 +129,56 @@ int Item::GetSalePrice()
 	return SalePrice;
 }
 
+int Item::GetWeaponBonus()
+{
+	return WeaponBonus;
+}
+
+int Item::GetWeaponDamage()
+{
+	return WeaponDamage;
+}
+
+int Item::GetDamageBonus()
+{
+	return DamageBonus;
+}
+
+int Item::GetArmorBonus()
+{
+	return ArmorBonus;
+}
+
+int Item::GetSTRBonus()
+{
+	return STRBonus;
+}
+
+int Item::GetDEXBonus()
+{
+	return DEXBonus;
+}
+
+int Item::GetCONBonus()
+{
+	return CONBonus;
+}
+
+int Item::GetINTBonus()
+{
+	return INTBonus;
+}
+
+int Item::GetWISBonus()
+{
+	return WISBonus;
+}
+
+int Item::GetCHABonus()
+{
+	return CHABonus;
+}
+
 void Item::ResetSalePrice()
 {
 	SalePrice = 0;
@@ -135,13 +191,45 @@ void Item::SetItemDescription(std::string ItemDescr)
 	return;
 }
 
-void Item::CreateItem(std::string ItemName, double weightnum, int value, std::string description)
+void Item::CreateItem(
+	std::string ItemName, 
+	std::string TypeName, 
+	double weightnum, 
+	int value, 
+	bool isequipable,
+	int wepbonus, 
+	int wepdamage, 
+	int damagebonus, 
+	int armorBonus,
+	int strBonus,
+	int dexBonus,
+	int conBonus,
+	int intBonus,
+	int wisBonus,
+	int chaBonus,
+	bool isWeapon, 
+	bool isArmor, 
+	std::string description)
 {
 	Name = ItemName;
+	ItemType = TypeName;
 	Weight = weightnum;
 	Value = value;
 	Cost = FindCost(Value);
 	SalePrice = FindSalePrice(Value);
+	IsEquippable = isequipable;
+	WeaponBonus = wepbonus;
+	WeaponDamage = wepdamage;
+	DamageBonus = damagebonus;
+	ArmorBonus = armorBonus;
+	STRBonus = strBonus;
+	DEXBonus = dexBonus;
+	CONBonus = conBonus;
+	INTBonus = intBonus;
+	WISBonus = wisBonus;
+	CHABonus = chaBonus;
+	IsWeapon = isWeapon;
+	IsArmor = isArmor;
 	ItemDescription = description;
 	return;
 	//NumberOf = num;
@@ -149,7 +237,6 @@ void Item::CreateItem(std::string ItemName, double weightnum, int value, std::st
 
 void Item::PrintItemInfo()
 {
-	//TODO PrintItemInfo turn into table
 	Cl.DarkYellow();
 	std::cout << std::left << std::setw(30) << Name + ": " << Weight << " lbs." << std::endl;
 	TC.outputText(ItemDescription);
@@ -159,7 +246,6 @@ void Item::PrintItemInfo()
 
 void Item::PrintItemDetail()
 {
-	//TODO PrintItemDetail turn into table
 	Cl.DarkYellow();
 	std::cout << std::left << std::setw(30) << Name + ": " << std::left << std::setw(5) <<
 		Weight << std::left << std::setw(10) << " lbs." << Value << " Gold " << std::endl;
@@ -170,7 +256,6 @@ void Item::PrintItemDetail()
 
 void Item::PrintSkinny()
 {
-	//TODO PrintItemSkinny turn into table
 	Cl.DarkYellow();
 	std::cout << std::left << std::setw(30) << Name + ": " << Weight << " lbs." << std::endl;
 	return;
@@ -178,7 +263,6 @@ void Item::PrintSkinny()
 
 void Item::PrintGeneral()
 {
-	//TODO PrintGeneral turn into table
 	Cl.DarkYellow();
 	std::cout << std::left << std::setw(30) << Name + ": " << std::left << std::setw(5) <<
 		Weight << std::left << std::setw(10) <<	" lbs." << Value << " Gold " << std::endl;
@@ -188,7 +272,6 @@ void Item::PrintGeneral()
 
 void Item::PrintItemForSale()
 {
-	//TODO PrintItemForSale turn into table
 	Cl.DarkYellow();
 	std::cout << std::left << std::setw(30) << Name + ": " << std::left << std::setw(5) <<
 		Weight << std::left << std::setw(10) << " lbs." << Cost << " Gold " << std::endl;
@@ -198,7 +281,6 @@ void Item::PrintItemForSale()
 
 void Item::PrintDetailForSale()
 {
-	//TODO PrintDetailForSale turn into table
 	Cl.DarkYellow();
 	std::cout << std::left << std::setw(30) << Name + ": " << Weight << std::left << std::setw(25) <<
 		" lbs." << Cost << " Gold " << std::endl;
@@ -222,6 +304,60 @@ bool Item::MoveFromPlayerInventory()
 {
 	IsInInventory = false;
 	return IsInInventory;
+}
+
+void Item::SetAsEquippable()
+{
+	IsEquippable = true;
+	return;
+}
+
+bool Item::CheckIfEquippable()
+{
+	if (IsEquippable == true)
+	{
+		return true;
+	}
+	else if (IsEquippable == false)
+	{
+		return false;
+	}
+}
+
+void Item::SetAsWeapon()
+{
+	IsWeapon = true;
+	return;
+}
+
+bool Item::CheckIfWeapon()
+{
+	if (IsWeapon == true)
+	{
+		return true;
+	}
+	else if (IsWeapon == false)
+	{
+		return false;
+	}
+}
+
+void Item::SetAsArmor()
+{
+	IsArmor = true;
+	return;
+}
+
+bool Item::CheckIfArmor()
+{
+	if (IsArmor == true)
+	{
+		return true;
+	}
+	else if (IsArmor == false)
+	{
+		return false;
+	}
 }
 
 

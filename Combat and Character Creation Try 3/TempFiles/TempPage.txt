@@ -4,8 +4,8 @@ It is up to you to decide if you are going to leave with the man.
 He looks trust worthy... 
 ... then again 
 
-TextFiles\\Intro_ItemsForSaleList.txt
-TextFiles\\Intro_ItemsList.txt
+TempFiles\\TempSaleInv.txt
+TempFiles\\TempInv.txt
 
 TextFiles\\Test1.txt
 Option One:  Teleport to The Cellar 
@@ -27,7 +27,7 @@ A hay bed covers the floor of a rickety wood structure.  The doors are wide open
 Goshen the Buyer
 1000
 
-500
+0
 
 
 

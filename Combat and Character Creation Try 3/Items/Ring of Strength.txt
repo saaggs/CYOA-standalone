@@ -1,0 +1,18 @@
+Ring of Strength
+ring
+.15
+150
+1
+0
+0
+0
+0
+2
+0
+0
+0
+0
+0
+0
+0
+This shiny rock looks valuable.

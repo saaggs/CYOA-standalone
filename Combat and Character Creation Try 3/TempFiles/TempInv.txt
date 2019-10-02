@@ -3,4 +3,3 @@ Items\\Bearskin Cloak.txt
 Items\\Long Sword.txt
 Items\\Emerald Gemmed Long Sword.txt
 Items\\Ring of Strength.txt
-

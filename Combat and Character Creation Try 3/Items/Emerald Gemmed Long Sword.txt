@@ -1,0 +1,18 @@
+Emerald Gemmed Long Sword
+weapon
+3
+1000
+1
+1
+8
+1
+0
+0
+0
+0
+0
+0
+0
+1
+0
+This carefully crafted long sword is made of decent iron.  A gem has been fitted to the butt of the pommel.

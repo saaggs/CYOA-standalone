@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "Storyline.h"
 #include "TextWrapAndCAPS.h"
 #include "TextColors.h"
@@ -13,6 +14,7 @@
 
 
 
+ASCIArt ASCI;
 TextWrapAndCAPS Caps;
 TextColors Colr;
 FInventory Inv;
@@ -33,60 +35,24 @@ Storyline::~Storyline()
 
 void Storyline::ActionsAndScenes()
 {
-	//TODO IG.WritePlayerCharacterToFile() inputs current text file as below, but needs to update
-	//TODO CurrentTextFile requires additional slashes to write to file, so string must be modified
-	CurrentTextFile = "TextFiles\\\\Intro.txt";
-	IG.WritePlayerCharacterToFile();
-	Pg.Pg("TextFiles\\Intro.txt");
-	Pg.PrintPg();
-	Inv.ClearRoomInventory();
-	if (Pg.Pages[6] != "")
+	//PlayerSave.txt must exist and line 20 must be a page file reference or must be 'Start'
+	Pg.Pg("SaveFiles\\PlayerSave.txt");
+	if (Pg.Pages[20] != "Start")
 	{
-		Pg.GetPgInvList(Pg.Pages[6]);
-		Pg.GetPgSaleInv();
-		for (auto item : Pg.NPCInventory)
-		{
-			Inv.NPCTakeItem(item);
-		}
-		if (Inv.GetNPCInv().size() != 0)
-		{
-			Colr.Green();
-			std::cout << "The following items are for sale: \n\n";
-			for (auto item : Inv.GetNPCInv())
-			{
-				item.PrintItemForSale();
-			}
-		}
+		IG.ReadPlayerCharacterFromFile();
+		Inv.PlayerSetGold();
+		Inv.CreatePlayerInvFromSave();
+		Inv.CreatePlayerEquippedInvFromSave();
+		ShareEquippedInvFromPlayerEquippedInv();
+		IG.SetPlayerEqBonuses();
+		IG.UpdatePlayerCharacter();
+		MakePage("TempFiles\\TempPage.txt");  // Pg.Pages[20]
 	}
-	if (Pg.Pages[7] != "")
+	else
 	{
-		//std::cout << "ActionAndScenes is running having found line 7 \n\n";
-		Pg.GetPgInvList(Pg.Pages[7]);
-		Pg.GetPgInv();
-		//std::cout << "Pg.PageInventory: " << std::endl;
-		for (auto item : Pg.PageInventory)
-		{
-			//std::cout << item.GetName() << std::endl;
-			Inv.RoomTakeItem(item);
-		}
-		if (Inv.GetRoomInv().size() != 0)
-		{
-			std::wcout << std::endl;
-			Colr.Green();
-			std::cout << "A quick search of the area reveals the followng items: \n\n";
-			for (auto item : Inv.GetRoomInv())
-			{
-				item.PrintSkinny();
-			}
-		}
-	}
-	PrintConnectingPages();
-	if (Pg.Pages[29] != "")
-	{
-		//transfer gold from page to player
-		std::string gold = Pg.Pages[29];
-		int GetGold = std::stoi(gold);
-		Inv.GetGold(GetGold);
+		IG.CreatePlayerCharacter();
+		IG.Clean();
+		MakePage("TextFiles\\Intro.txt");
 	}
 	do
 	{
@@ -99,45 +65,12 @@ void Storyline::ActionsAndScenes()
 			Pg.CleanInvStats();
 			Pg.PageInventory.clear();
 			Inv.ClearRoomInventory();
-			//TODO For navigation from save, Pg.Pg(TextFile) must be modified with extra slashes
-			Pg.Pg(Pg.Pages[9]);
-			if (Pg.Pages[7] == "")
-			{
-				Pg.CleanInvList();
-				Pg.CleanInvStats();
-				//RoomInv.Inventory.clear();
-				Pg.PrintPg();
-			}
-			else
-			{
-				Pg.GetPgInvList(Pg.Pages[7]);
-				Pg.GetPgInv();
-				
-				for (Item Item : Pg.GetRmInv())
-				{
-					//RoomInv.CheckInventory();
-					//RoomInv.Inventory.push_back(Item);
-				}
-				//RoomInv.CheckInventory();
-				Pg.PrintPg();
-			}
+			Inv.ClearNPCInventory();
+			MakePage(Pg.Pages[9]);
 		}
 		else if (PI.GetCommand() == "two")
 		{
-			Pg.Pg(Pg.Pages[11]);
-			//RoomInv.Inventory.clear();
-			//RoomInv.Inventory.resize(0);
-			if (Pg.Pages[7] != "")
-			{
-				Pg.GetPgInvList(Pg.Pages[7]);
-				Pg.GetPgInv();
-				for (Item Item : Pg.GetRmInv())
-				{
-					RoomInv.Inventory.push_back(Item);
-				}
-				//RoomInv.CheckInventory();
-			}
-			Pg.PrintPg();
+			MakePage(Pg.Pages[11]);
 		}
 		else if (PI.GetCommand() == "three")
 		{
@@ -207,7 +140,7 @@ void Storyline::ActionsAndScenes()
 			}
 			Pg.PrintPg();
 		}
-	} while (PI.GetCommand() != "quit"); 
+	} while (PI.GetCommand() != "quit");
 	std::cout << "end \n\n";
 }
 
@@ -230,6 +163,9 @@ void Storyline::PlayerTakeItem(std::string Command)
 			Colr.Green();
 			std::cout << "You take the " << item.GetName() << std::endl;
 			Inv.RoomInvRemoveItem(item);
+			PlayerSaveInv();
+			PopulateTempInvListVector();
+			WriteTempInv(TempInvList);
 			//Pg.PageInventory.erase(Pg.PageInventory.begin()+ItemCount);
 			return;
 		}
@@ -284,6 +220,12 @@ void Storyline::PlayerBuyItem(std::string Command)
 				Inv.PlayerTakeItem(item);
 				Colr.Green();
 				Inv.SpendGold(item.GetCost());
+				BuyerGold = 0;
+				BuyerGold = std::stoi(Pg.Pages[27]);
+				SpentGold = item.GetCost();
+				BuyerGold = BuyerGold + SpentGold;
+				Pg.Pages[27] = std::to_string(BuyerGold);
+				SaveBuyerGold();
 				std::cout << "You bought the " << item.GetName() << std::endl;
 				Inv.NPCInvRemoveItem(item);
 				//Pg.PageInventory.erase(Pg.PageInventory.begin() + ItemCount);
@@ -291,6 +233,9 @@ void Storyline::PlayerBuyItem(std::string Command)
 				{
 					Inv.NPCInvRemoveItem(item);
 				}
+				PlayerSaveInv();
+				PopulateTempSaleInvListVector();
+				WriteTempSaleInv(TempSaleInvList);
 				return;
 			}
 			else
@@ -324,7 +269,7 @@ void Storyline::PlayerSellItem(std::string Command)
 	if (Inv.GetPlayerInv().size() == 0)
 	{
 		Colr.Green();
-		std::cout << "Your inventory is empty. \n";
+		std::cout << "Your inventory is empty. \n  You must unequip items before selling them.";
 		return;
 	}
 	bool DoneSelling = false;
@@ -341,7 +286,7 @@ void Storyline::PlayerSellItem(std::string Command)
 			{
 				Colr.Green();
 				std::cout << Pg.Pages[26] << " isn't interested in buying the " << item.GetName() 
-					<< "\n\n";
+					<< ".\n\n";
 				return;
 			}
 			if (NPCGold > item.GetSalePrice())
@@ -372,19 +317,28 @@ void Storyline::PlayerSellItem(std::string Command)
 				{
 					Colr.Green();
 					Inv.NPCTakeItem(item);
+					PopulateTempSaleInvListVector();
+					WriteTempSaleInv(TempSaleInvList);
 					Inv.PlayerRemoveItem(item);
+					PlayerSaveInv();
 					std::cout << "\n\n";
 					std::cout << "You sold the " << item.GetName() <<
 						" to " << Pg.Pages[26] << " for " <<
 						item.GetSalePrice() << " gold." << std::endl;
 					Inv.GetGold(item.GetSalePrice());
+					BuyerGold = 0;
+					BuyerGold = std::stoi(Pg.Pages[27]);
+					BuyerGold = BuyerGold - item.GetSalePrice();
+					Pg.Pages[27] = std::to_string(BuyerGold);
+					SaveBuyerGold();
+					return;
 					//std::cout << "item " << item.GetName() << " " << item.GetCost();
 				}
 				if (PlayerIn[0] == 'n' || PlayerIn[0] == 'N')
 				{
 					Colr.Green();
 					std::cout << "You decided not to sell the " << item.GetName() 
-						<< std::endl;
+						<< "." << std::endl;
 					DoneSelling = true;
 					return;
 				}
@@ -393,7 +347,8 @@ void Storyline::PlayerSellItem(std::string Command)
 		if (VectorSizeCount == OriginalSize)
 		{
 			Colr.Green();
-			std::cout << "You do not have the \"" << Command << "\"" << std::endl;
+			std::cout << "You do not have the \"" << Command << "\" in your inventory." << std::endl << 
+				"You must unequip items before selling them. \n";
 			return;
 		}
 		ItemCount++;
@@ -428,9 +383,12 @@ void Storyline::PlayerDropItem(std::string Command)
 				//}
 				std::cout << "\n\n";
 				Inv.RoomTakeItem(item);
+				PopulateTempInvListVector();
+				WriteTempInv(TempInvList);
 				//Pg.PageInventory.push_back(std::move(Item));
 				Inv.PlayerRemoveItem(item);
-				std::cout << "You drop the " << item.GetName() << std::endl;
+				PlayerSaveInv();
+				std::cout << "You drop the " << item.GetName() << "." << std::endl;
 				return;
 			}
 		}
@@ -439,9 +397,183 @@ void Storyline::PlayerDropItem(std::string Command)
 	}
 	if (VectorSizeCount == OriginalSize)
 	{
-		std::cout << "You do not have the \"" << Command << "\"" << std::endl;
+		std::cout << "You do not have the \"" << Command << "\".  Items must be unequipped " 
+			"before dropping them." << std::endl;
 		return;
 	}
+}
+
+void Storyline::PlayerEquipItem(std::string Command)
+{
+	if (Inv.GetPlayerInv().size() == 0)
+	{
+		Colr.Green();
+		std::cout << "Your inventory is empty. \n";
+		return;
+	}
+	int ItemCount = 0;
+	int VectorSizeCount = 1;
+	int OriginalSize = Inv.GetPlayerInv().size(); 
+	for (Item item : Inv.GetPlayerInv())
+	{
+		if (item.GetName() == Command)
+		{
+			Colr.Green();
+			//TODO Bearskin Cloak cannot be equipped
+			//TODO Make equip slot for all equippable items, rings armor, cloaks, clothes ...
+			std::cout << "Item type : " << item.GetItemType() << " is equippable ? " << 
+				item.CheckIfEquippable() <<  std::endl;
+			if (item.CheckIfEquippable() == false)
+			{
+					std::cout << Command << " is not equippable. \n\n";
+					return;
+			}
+			if (item.CheckIfWeapon() == true)
+			{
+				for (Item object : Inv.GetPlayerEquippedInv())
+				{
+					if (object.CheckIfWeapon() == true)
+					{
+						std::cout << "You must unequip your current weapon first. \n\n";
+						return;
+					}
+				}
+			}
+			if (item.CheckIfArmor() == true)
+			{
+				for (Item object : Inv.GetPlayerEquippedInv())
+				{
+					if (object.CheckIfArmor() == true)
+					{
+						Colr.Green();
+						std::cout << "You must unequip your current armor first. \n\n";
+						return;
+					}
+				}
+			}
+			//Check if equipped items are already equipped for items of only 1 allowed to be equipped
+			if (item.GetItemType() == "belt" || 
+				item.GetItemType() == "cape" || 
+				item.GetItemType() == "cloak" || 
+				item.GetItemType() == "head" || 
+				item.GetItemType() == "hood" || 
+				item.GetItemType() == "neck" ||
+				item.GetItemType() == "pants" ||
+				item.GetItemType() == "pants" || 
+				item.GetItemType() == "robe" ||
+				item.GetItemType() == "shirt" || 
+				item.GetItemType()  == "feet" || 
+				item.GetItemType()  == "tabbard" ||
+				item.GetItemType() == "wrists"
+				)
+			{
+				std::string test = item.GetItemType();
+				for (Item object : Inv.GetPlayerEquippedInv())
+				{
+					if (object.GetItemType() == test)
+					{
+						Colr.Green();
+						std::cout << "You must unequip " << item.GetName() << " first \n";
+					}
+				}
+			}
+			//Check if equipped items are already equipped for items of only 2 allowed
+			if (item.GetItemType() == "ring")
+			{
+				std::cout << "Type = " << item.GetItemType() << std::endl;
+				int count = 0;
+				for (Item object : Inv.GetPlayerEquippedInv())
+				{
+					if (object.GetItemType() == "ring")
+					{
+						++count;
+						std::cout << "Count : " << count << std::endl;
+					}
+					if (count == 2)
+					{
+						Colr.Green();
+						std::cout << "Only two rings can be equipped at one time, unequip a ring. \n\n";
+						return;
+					}
+				}
+			}
+			//to be equipped
+			Inv.PlayerEquipItem(item);
+			PlayerSaveEq();
+			IG.CreatePlayerEqInvFromSave();
+			IG.SetPlayerEqBonuses();
+			IG.UpdatePlayerCharacter();
+			ShareEquippedInvFromPlayerEquippedInv();
+			//ShareEquippedInvFromPlayerEq();
+			Inv.PlayerRemoveItem(item);
+			PlayerSaveInv();
+			//IG.WritePlayerCharacterToFile();
+			Colr.Green();
+			std::cout << "You equip the " << item.GetName() << "." << std::endl;
+			return;
+		}
+		ItemCount++;
+		VectorSizeCount++;
+	}
+	if (VectorSizeCount == OriginalSize)
+	{
+		Colr.Green();
+		std::cout << "You do not have the \"" << Command << "\"." << std::endl;
+		return;
+	}
+}
+
+void Storyline::PlayerUnequipItem(std::string Command)
+{
+	IG.CreatePlayerEqInvFromSave();
+	PlayerSaveIGEq();
+	/*
+	for (auto item : IG.GetPlayerEq())
+	{
+		std::cout << item.GetName() << " is equipped in IG.PlayerEq\n";
+	}
+	*/
+	if (Inv.GetPlayerEquippedInv().size() == 0)
+	{
+		Colr.Green();
+		std::cout << "You do not have any items equipped. \n";
+		return;
+	}
+	int ItemCount = 0;
+	int VectorSizeCount = 1;
+	int OriginalSize = Inv.GetPlayerEquippedInv().size();
+	for (Item item : Inv.GetPlayerEquippedInv())
+	{
+		if (item.GetName() == Command)
+		{
+			{
+				Colr.Green();
+				Inv.PlayerUnequipItem(item);		
+				PlayerSaveEq();
+				IG.CreatePlayerEqInvFromSave();
+				IG.ClearPlayerEq();
+				ShareEquippedInvFromPlayerEquippedInv();
+				PlayerSaveIGEq();
+				IG.ResetPlayerEqBonuses();
+				IG.SetPlayerEqBonuses(); 
+				/*
+				for (auto item : IG.GetPlayerEq())
+				{
+					std::cout << item.GetName() << " is still equipped in IG.PlayerEq \n";
+				}
+				*/
+				IG.UpdatePlayerCharacter();
+				Inv.PlayerTakeItem(item);
+				PlayerSaveInv();
+				Colr.Green();
+				std::cout << "You unequip the " << item.GetName() << " and place it in your inventory."
+					<< std::endl;
+				return;
+			}
+		}
+	}
+	ItemCount++;
+	VectorSizeCount++;
 }
 
 void Storyline::PlayerCommandEffect()
@@ -468,9 +600,24 @@ void Storyline::PlayerCommandEffect()
 		PlayerTakeItem(Command);
 		std::cout << std::endl;
 	}
+	else if (PI.GetCommand().find("stats") == 0)
+	{
+		IG.PrintPlayerSheet();
+	}
 	else if (PI.GetCommand().find("inv") == 0)
 	{
 		Inv.CheckInventory();
+	}
+	else if (PI.GetCommand().find("equipment") == 0)
+	{
+		//TODO equipment command shows no items after a load because Inv.eq is empty because IG.eq 
+		//is where the inventory is after a load.  Create a function that transfers the inventory 
+		//in IG.PlayerEq to Inv.PlayerEquippedInv
+		Inv.CheckEquipped();
+	}
+	else if (PI.GetCommand().find("restart game") == 0)
+	{
+		RestartGame();
 	}
 	else if (PI.GetCommand().find("look") == 0)
 	{ 
@@ -530,7 +677,7 @@ void Storyline::PlayerCommandEffect()
 			if (Inv.GetNPCInv().size() != 0)
 			{
 				Colr.Green();
-				std::cout << std::endl << "For sale: \n";
+				std::cout << std::endl << "For sale: \n\n";
 				Colr.DarkYellow();
 				for (auto Element : Inv.GetNPCInv())
 				{
@@ -545,7 +692,7 @@ void Storyline::PlayerCommandEffect()
 			else
 			{
 				Colr.Green();
-				std::cout << std::endl << "You found: \n";
+				std::cout << std::endl << "You found: \n\n";
 				Colr.DarkYellow();
 				for (auto Element : Inv.GetRoomInv())
 				{
@@ -597,12 +744,120 @@ void Storyline::PlayerCommandEffect()
 		std::cout << std::endl;
 		return;
 	}
-	/*
-	else if (PI.GetCommand().find("1") == 0)
+	else if (PI.GetCommand().find("equip") == 0)
 	{
-		std::cout << "Go to first link" << std::endl;
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		PlayerEquipItem(Command);
 	}
-	*/
+	else if (PI.GetCommand().find("unequip") == 0)
+	{
+		std::string Command = PI.GetCommand();
+		Command = Command.substr(Command.find_first_of(" \t") + 1);
+		PlayerUnequipItem(Command);
+	}
+}
+
+void Storyline::PlayerSaveGold()
+{
+	std::ofstream PlayerGoldFile("SaveFiles\\PlayerGold.txt");
+	if (PlayerGoldFile.is_open())
+	{
+		PlayerGoldFile << Inv.GetPlayerGold() << std::endl;
+	}
+	return;
+}
+
+
+void Storyline::PlayerSaveInv()
+{
+	std::ofstream PlayerInvFile("SaveFiles\\PlayerInvSave.txt");
+	if (PlayerInvFile.is_open())
+	{
+		for (Item invitem : Inv.GetPlayerInv())
+		{
+			PlayerInvFile << "Items\\\\" + invitem.GetName() + ".txt" << std::endl;
+		}
+	}
+	return;
+}
+
+void Storyline::PlayerSaveEq()
+{
+	std::ofstream PlayerEquipmentInvFile("SaveFiles\\PlayerEquipmentSave.txt");
+	if (PlayerEquipmentInvFile.is_open())
+	{
+		for (Item invitem : Inv.GetPlayerEquippedInv())
+		{
+			PlayerEquipmentInvFile << "Items\\\\" + invitem.GetName() + ".txt" << std::endl;
+		}
+	}
+	return;
+}
+
+void Storyline::PlayerSaveIGEq()
+{
+	std::ofstream PlayerEquipmentInvFile("SaveFiles\\PlayerEquipmentSave.txt");
+	if (PlayerEquipmentInvFile.is_open())
+	{
+		for (Item invitem : IG.GetPlayerEq())
+		{
+			PlayerEquipmentInvFile << "Items\\\\" + invitem.GetName() + ".txt" << std::endl;
+		}
+	}
+	return;
+}
+
+void Storyline::SavePgGold()
+{
+	std::vector <std::string> FileText;
+	std::string Line = "";
+	std::string Text = "";
+	std::ifstream File("TempFiles\\TempPage.txt");
+	if (File.is_open())
+	{
+		while (std::getline(File, Line))
+		{
+			Text = Line;
+			FileText.push_back(Text);
+		}
+	}
+	FileText[29] = "0";
+	std::ofstream PageFile("TempFiles\\TempPage.txt");
+	if (PageFile.is_open())
+	{
+		for (std::string Text : FileText)
+		{
+			PageFile << Text << std::endl;
+		}
+	}
+	return;
+}
+
+void Storyline::SaveBuyerGold()
+{
+	std::vector <std::string> FileLines;
+	std::string Line = "";
+	std::string Text = "";
+	std::ifstream PageFile("TempFiles\\TempPage.txt");
+	if (PageFile.is_open())
+	{
+		while (std::getline(PageFile, Line))
+		{
+			Text = Line;
+			FileLines.push_back(Text);
+		}
+	}
+	FileLines[27] = std::to_string(BuyerGold);
+	std::ofstream PageLines("TempFiles\\TempPage.txt");
+	if (PageFile.is_open())
+	{
+		for (std::string Text : FileLines)
+		{
+			PageLines << Text << std::endl;
+		}
+	}
+	return;
 }
 
 void Storyline::PrintConnectingPages()
@@ -626,14 +881,282 @@ void Storyline::PrintConnectingPages()
 	return;
 }
 
+void Storyline::WriteTempPage(std::vector <std::string> PageVector)
+{
+	PageVector[6] = "TempFiles\\\\TempSaleInv.txt";
+	PageVector[7] = "TempFiles\\\\TempInv.txt";
+	std::ofstream PageTempFile("TempFiles\\TempPage.txt");
+	if (PageTempFile.is_open())
+	{
+		for (auto element : PageVector)
+		{
+			PageTempFile << element << std::endl;
+		}
+	}
+	return;
+}
+
+void Storyline::PopulateTempInvListVector()
+{
+	TempInvList.clear();
+	std::string FileName = "";
+	for (auto item : Inv.GetRoomInv())
+	{
+		FileName = "Items\\\\" + item.GetName() + ".txt";
+		TempInvList.push_back(FileName);
+	}
+	return;
+}
+
+void Storyline::WriteTempInv(std::vector <std::string> PageInvVector)
+{
+	std::ofstream TempInvWriteFile("TempFiles\\TempInv.txt");
+	if (TempInvWriteFile.is_open())
+	{
+		for (auto element : PageInvVector)
+		{
+			TempInvWriteFile << element << std::endl;
+		}
+	}
+	return;
+}
+
+void Storyline::PopulateTempSaleInvListVector()
+{
+	TempSaleInvList.clear();
+	std::string FileName = "";
+	for (auto item : Inv.GetNPCInv())
+	{
+		FileName = "Items\\\\" + item.GetName() + ".txt";
+		TempSaleInvList.push_back(FileName);
+	}
+	return;
+}
+
+void Storyline::WriteTempSaleInv(std::vector<std::string> SaleInvVector)
+{
+	std::ofstream TempSaleInvWriteFile("TempFiles\\TempSaleInv.txt");
+	if (TempSaleInvWriteFile.is_open())
+	{
+		for (auto element : SaleInvVector)
+		{
+			TempSaleInvWriteFile << element << std::endl;
+		}
+	}
+	return;
+}
+
+std::vector<std::string> Storyline::GetTempInvList()
+{
+	return std::vector<std::string>(TempInvList);
+}
+
 std::vector<Item> Storyline::GetTempInv()
 {
 	return TempInv;
 }
 
+std::vector<std::string> Storyline::GetTempSaleInvList()
+{
+	return std::vector<std::string>(TempSaleInvList);
+}
+
+std::vector<Item> Storyline::GetTempSaleInv()
+{
+	return std::vector<Item>(TempSaleInv);
+}
+
 std::string Storyline::GetCurrentTextFile()
 {
 	return std::string(CurrentTextFile);
+}
+
+void Storyline::ShareEquippedInvFromPlayerEq()
+{
+	for (auto item : IG.GetPlayerEq())
+	{
+		std::cout << "PlayerEq is sharing " << item.GetName() << std::endl;
+		Inv.SharePlayerEq(item);
+	}
+	return;
+}
+
+void Storyline::ShareEquippedInvFromPlayerEquippedInv()
+{
+	for (auto item : Inv.GetPlayerEquippedInv())
+	{
+		//std::cout << "PlayerEquippedInv is sharing " << item.GetName() << std::endl;
+		IG.ShareEquippedInvFromInv(item);
+	}
+	return;
+}
+
+void Storyline::RestartGame()
+{
+	std::string PlayerIn = "";
+	Colr.Green();
+	std::cout << "Are you sure you wish to restart the game?  All progress will " <<
+		"be lost.  Please enter 'y' or 'Y' to restart or press any other key " <<
+		"to cancel \n\n";
+	PI.PlayerInput();
+	PlayerIn = PI.GetCommand();
+	std::cout << std::endl;
+	if (PlayerIn[0] == 'y' || PlayerIn[0] == 'Y')
+	{
+		std::vector <std::string> FileText;
+		std::string Line = "";
+		std::string Text = "";
+		std::ifstream PlayerSaveFile("SaveFiles\\PlayerSave.txt");
+		if (PlayerSaveFile.is_open())
+		{
+			while (std::getline(PlayerSaveFile, Line))
+			{
+				Text = Line;
+				FileText.push_back(Text);
+			}
+		}
+		FileText[20] = "Start";
+		std::ofstream PlayerResetSaveFile("SaveFiles\\PlayerSave.txt");
+		if (PlayerResetSaveFile.is_open())
+		{
+			for (std::string text : FileText)
+			{
+				PlayerResetSaveFile << text << std::endl;
+			}
+		}
+		//TODO restart game is not resetting the player inv.  Thinking it's the vector.
+		std::vector <std::string> PlayerInvVector;
+		std::ifstream PlayerFetchInv("SaveFiles\\PlayerInvSave.txt");
+		if (PlayerFetchInv.is_open())
+		{
+			while (std::getline(PlayerFetchInv, Line))
+			{
+				Text = Line;
+				PlayerInvVector.push_back(Text);
+			}
+		}
+		std::ofstream PlayerResetInv("SaveFiles\\PlayerInvSave.txt");
+		if (PlayerResetInv.is_open())
+		{
+			for (std::string text : PlayerInvVector)
+			{
+				text = "";
+				PlayerResetInv << text << std::endl;
+			}
+		}
+		Inv.ClearPlayerInv();
+		Inv.ClearPlayerInvList();
+		Inv.SetPlayerInvList();
+		Inv.CreatePlayerInvFromSave();
+		std::ofstream PlayerResetGold("SaveFiles\\PlayerGold.txt");
+		if (PlayerResetGold.is_open())
+		{
+			PlayerResetGold << "0" << std::endl;
+		}
+		Inv.PlayerSetGold();
+		//TODO reset PlayerEquipmentSave not resetting on restart.
+		std::vector <std::string> PlayerEqInv;
+		std::ifstream  PlayerFetchEq("SaveFiles\\PlayerEquipmentSave.txt");
+		if (PlayerFetchEq.is_open())
+		{
+			while (std::getline(PlayerFetchEq, Line))
+			{
+				Text = Line;
+				PlayerEqInv.push_back(Text);
+			}
+		}
+		std::ofstream PlayerResetEq("SaveFiles\\PlayerEquipmentSave.txt");
+		if (PlayerResetEq.is_open())
+		{
+			for (std::string text : PlayerEqInv)
+			{
+				text = "";
+				PlayerResetEq << text << std::endl;
+			}
+		}
+		Inv.ClearPlayerEquippedInv();
+		Inv.ClearPlayerEquippedInvList();
+		Inv.SetPlayerEquippedInvList();
+		Inv.CreatePlayerEquippedInvFromSave();
+		IG.ResetPlayerEqBonuses();
+		ASCI.PlayIntro();
+		IG.Story();
+	}
+	return;
+}
+
+void Storyline::MakePage(std::string PageReference)
+{
+	//std::cout << "MakePage() is working!! \n\n";
+	Pg.Pg(PageReference);
+	WriteTempPage(Pg.Pages);
+	Pg.PrintPg();
+	SpentGold = 0;
+	BuyerGold = 0;
+	Inv.ClearRoomInventory();
+	Inv.ClearNPCInventory();
+	Pg.NPCInventory.clear();
+	if (Pg.Pages[6] != "")
+	{
+		Pg.GetPgInvList(Pg.Pages[6]);
+		Pg.GetPgSaleInv();
+		for (auto item : Pg.NPCInventory)
+		{
+			Inv.NPCTakeItem(item);
+		}
+		PopulateTempSaleInvListVector();
+		WriteTempSaleInv(TempSaleInvList);
+		if (Inv.GetNPCInv().size() != 0)
+		{
+			Colr.Green();
+			std::cout << "The following items are for sale: \n\n";
+			for (auto item : Inv.GetNPCInv())
+			{
+				item.PrintItemForSale();
+			}
+		}
+	}
+	if (Pg.Pages[7] != "")
+	{
+		//std::cout << "ActionAndScenes is running having found line 7 \n\n";
+		Pg.GetPgInvList(Pg.Pages[7]);
+		Pg.GetPgInv();
+		//std::cout << "Pg.PageInventory: " << std::endl;
+		for (auto item : Pg.PageInventory)
+		{
+			//std::cout << item.GetName() << std::endl;
+			Inv.RoomTakeItem(item);
+		}
+		PopulateTempInvListVector();
+		WriteTempInv(TempInvList);
+		if (Inv.GetRoomInv().size() != 0)
+		{
+			std::cout << std::endl;
+			Colr.Green();
+			std::cout << "A quick search of the area reveals the followng items: \n\n";
+			for (auto item : Inv.GetRoomInv())
+			{
+				item.PrintSkinny();
+			}
+		}
+	}
+	PrintConnectingPages();
+	if (Pg.Pages[29] != "0")
+	{
+		//transfer gold from page to player
+		std::string gold = Pg.Pages[29];
+		int GetGold = std::stoi(gold);
+		Inv.GetGold(GetGold);
+		SavePgGold();
+	}
+	CurrentTextFile = Pg.Pages[50];
+	//These three save functions automatically overwrite the save data
+	//TODO when loading in a page that was already visited all commands previous commands are erased
+	//must update item lists and inventory saves after each command...
+	IG.WritePlayerCharacterToFile();
+	PlayerSaveGold();
+	PlayerSaveInv();
+	PlayerSaveEq();
 }
 
 
