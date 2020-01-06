@@ -110,7 +110,7 @@ void PlayGame()
 	//bool bKeepPlaying = false;
 	//do
 	//{
-		system("CLS");
+		//system("CLS");
 		//ILESGame.GenerateNPCs();
 		//ILESGame.Clean();
 		ILESGame.Story();  //TODO Story Line, with hopefully add combat.
@@ -192,33 +192,21 @@ void PlayGame()
 //**  be an issue.																**
 //================================================================================
 
-//TOOD Needs testing, but believe the page and inventory lists all update items with weapon or 
-//armor stats if any, those that don't have stats need to be filled in with 0's.  Can equip armor and 
-//weapons and the game should know if a weapon or armor is already equipped.
-//TODO Need to see what happens to PlayerEquippmentSave.txt when items are equipped then unequipped.
-//TODO file not open error after retrieving sale inventory from page, need to check.
-//TODO need to add eqiupped items stats to character stats for combat.
-//TODO instead of rewriting page data and then having to keep track and replace it if reset, create a
-//temporary page that changes based on player activity and load that file when reloading.  Will need
-//a temp file for inventories as well...
-//TODO Page Files now update based on Player choices, but need to reset them if the game is reset.
-
-//TODO if more than one item of same kind per page at different prices, can only buy the first item
-//This might be okay because same kind items shouldn't be different prices, but the error makes 
-//it clear that if same name items have two different prices there is no way to select the 
-//second item.
-
-//TODO If a page doesn't have player choices, then need a way to advance once player is ready
-
-//TODO combat pages.  texfiles must be able to create or auto generate NPCS
-//and combat must be initiated.  NPC's could be their own text files
-
-//TODO need a way for the game to determine if a character has a certain power or not.
-
-//TODO need to decide on the actual abilities the character will have access to.
-
-//All Items that need to be paid for go into NPC inventory and cost gold.
-
+/*
+TODO Add healing and damaging modifiers to items.
+TODO Add healing and damaging modifiers to abilities.
+TODO need to destroy items that are consumable from ones inventory.  Easiest way is transfer to
+the room and pop the last item.
+Maybe do this -- if more than one item of same kind per page at different prices, can only buy
+the first item This might be okay because same kind items shouldn't be different prices, but 
+the error makes it clear that if same name items have two different prices there is no way to
+select the second item.
+TODO If a page doesn't have player choices, then need a way to advance once player is ready
+TODO combat pages.  texfiles must be able to create or auto generate NPCS
+and combat must be initiated.  NPC's could be their own text files
+TODO need a way for the game to determine if a character has a certain power or not.
+TODO need to decide on the actual abilities the character will have access to.
+*/
 
 //===============================================
 //**  These items aren't needed for textfiles  **
@@ -236,6 +224,16 @@ void PlayGame()
 //||  Completed  ||
 //*+*+*+*+*+*+*+*+*
 
+//add eqiupped items stats to character stats for combat.
+//Page Files now update based on Player choices, but need to reset them if the game is reset.
+//instead of rewriting page data and then having to keep track and replace it if reset, create a
+//temporary page that changes based on player activity and load that file when reloading.  Will need
+//a temp file for inventories as well...
+//The page and inventory lists all update items with weapon or 
+//armor stats if any, those that don't have stats need to be 
+//filled in with 0's.  Can equip armor and weapons and the game 
+//knows if a weapon or armor is already equipped.
+//All Items that need to be paid for go into NPC inventory and cost gold.
 //Room Inventory is now working
 //Player pick up and drop items
 //Player can buy items

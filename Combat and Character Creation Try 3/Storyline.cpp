@@ -576,7 +576,7 @@ void Storyline::PlayerUnequipItem(std::string Command)
 	VectorSizeCount++;
 }
 
-void Storyline::PlayerCommandEffect()
+void Storyline::PlayerCommandEffect() // PI class is PlayerControls
 {
 	std::cout << std::endl;
 	if (PI.GetCommand().find("buy") == 0)
@@ -607,6 +607,10 @@ void Storyline::PlayerCommandEffect()
 	else if (PI.GetCommand().find("inv") == 0)
 	{
 		Inv.CheckInventory();
+	}
+	else if (PI.GetCommand().find("abilities") == 0)
+	{
+		IG.PrintPlayerAbilities();
 	}
 	else if (PI.GetCommand().find("equipment") == 0)
 	{
@@ -1079,6 +1083,8 @@ void Storyline::RestartGame()
 		Inv.SetPlayerEquippedInvList();
 		Inv.CreatePlayerEquippedInvFromSave();
 		IG.ResetPlayerEqBonuses();
+		IG.ResetGameAbilities();
+		IG.ResetPlayerAbilities();
 		ASCI.PlayIntro();
 		IG.Story();
 	}

@@ -86,10 +86,15 @@ private:
 	int WISBonus = 0;
 	int CHABonus = 0;
 	int NumberOf = 0;
+
 	bool IsEquippable = false;
 	bool IsInInventory = false;
 	bool CostMoney = false;
 	bool IsWeapon = false;
 	bool IsArmor = false;
+
+	int Rejuvination = 0;
+	int TotalHPEffect = 0;
+	int CurrentHPEffect = 0;
 };
 

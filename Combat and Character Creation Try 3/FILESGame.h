@@ -30,6 +30,10 @@ public:
 	//TODO Set these from FILESGame vectors
 	void SetPlayerEqBonuses();
 	void ResetPlayerEqBonuses();
+	void ResetGameAbilities();
+	void ResetPlayerAbilities();
+	void PrintPlayerAbilities();
+	std::vector <Abilities> GetAvailableAbilities();
 	//TODO need to ReadNPCCharacterFromFile into a vector and import that into combat.  
 	//TODO Several lines in PageFile.txt dedicated to an NPC list that can set number of 
 	//npc's for combat.
@@ -70,6 +74,8 @@ private:
 	std::vector <std::string> PlayerEqList;
 	std::vector <std::string> PlayerEqStats;
 	std::vector <Item> PlayerEq;
+	std::vector <Abilities> AvailableAbilities;
+	std::vector <Abilities> PlayerAbilities;
 };
 
 

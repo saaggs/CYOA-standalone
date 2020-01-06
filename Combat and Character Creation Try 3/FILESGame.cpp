@@ -17,6 +17,7 @@
 #include "TextColors.h"
 #include "FInventory.h"
 #include "Item.h"
+#include "Abilities.h"
 //#include "Page.h"
 #undef max
 
@@ -26,6 +27,7 @@ FInventory PlayerInventory;
 Storyline SectionOne;
 Item EqItem;
 Page Pge;
+Abilities AB;
 
 FILESGame::FILESGame()
 {
@@ -55,6 +57,7 @@ void FILESGame::Clean()
 
 void FILESGame::CreatePlayerCharacter()
 {
+	std::cout << "Press 'Ctrl + C' at any time to quit the game without saving \n\n";
 	Player.CreateFirstName();
 	Player.CreateLastName();
 	Player.CreateFullName();
@@ -79,7 +82,16 @@ void FILESGame::CreatePlayerCharacter()
 	Player.GenerateStartingHP();
 	Player.FinishStats();
 	Player.PrintCharacterSheet();
-	Player.PlayerAbilities();
+	Player.ReadAvailableAbilitiesFromFile();
+	/*TODO test ChoosePlayerAbilities() to see if it's working.  It list the different abilities and 
+	uses PlayerControls class to get a command from player.  If player command is same as the 
+	skill name then the player can collect the skill, provided the skill isn't already in the 
+	player's Ability Vector*/
+	Player.ChoosePlayerAbilities();
+	ApplyBonusesAndTotalPlayerStats();
+	Player.GenerateStatMods();
+	Player.GenerateStartingHP();
+	Player.FinishStats();
 	return;
 }
 
@@ -174,7 +186,7 @@ void FILESGame::ReadPlayerCharacterFromFile()
 	Player.SetINT(std::stoi(PlayerStatus[10]));
 	Player.SetWIS(std::stoi(PlayerStatus[11]));
 	Player.SetCHA(std::stoi(PlayerStatus[12]));
-	Player.SetPlayerTotalHP(std::stoi(PlayerStatus[13]));
+	Player.SetPlayerTHP(std::stoi(PlayerStatus[13]));
 	Player.SetPlayerCurrentHP(std::stoi(PlayerStatus[14])); 
 	UpdatePlayerCharacter();
 	//TODO Player.SetPlayerDamageModifier(0) ... This must be read from a different file 
@@ -376,6 +388,29 @@ void FILESGame::ResetPlayerEqBonuses()
 		Player.SetWISBonus(0);
 		Player.SetCHABonus(0);
 		return;
+}
+
+void FILESGame::ResetGameAbilities()
+{
+	Player.ClearGameAbilities();
+}
+
+void FILESGame::ResetPlayerAbilities()
+{
+	Player.ClearPlayerAbilities();
+	Player.ResetAbilityBonuses();
+	return;
+}
+
+void FILESGame::PrintPlayerAbilities()
+{
+	Player.GetAndPrintPlayerAbilities();
+	return;
+}
+
+std::vector<Abilities> FILESGame::GetAvailableAbilities()
+{
+	return AvailableAbilities;
 }
 
 void FILESGame::ApplyBonusesAndTotalPlayerStats()

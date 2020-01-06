@@ -60,6 +60,9 @@
     <ClCompile Include="ASCIArt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Abilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FILESGame.h">
@@ -102,6 +105,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ASCIArt.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Abilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

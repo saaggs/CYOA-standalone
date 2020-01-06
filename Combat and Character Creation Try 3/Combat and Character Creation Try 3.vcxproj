@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Abilities.cpp" />
     <ClCompile Include="ASCIArt.cpp" />
     <ClCompile Include="FCharacter.cpp" />
     <ClCompile Include="FILESGame.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Abilities.h" />
     <ClInclude Include="ASCIArt.h" />
     <ClInclude Include="FCharacter.h" />
     <ClInclude Include="FILESGame.h" />

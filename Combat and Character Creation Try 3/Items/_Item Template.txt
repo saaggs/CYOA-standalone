@@ -3,7 +3,7 @@ Item Slots : String - Recognized types: armor, cloak, ring, weapon
 Weight : Double
 Value : Int
 Is Equippable : bool, 1 for true 0 for false
-Weapon Bonus to Hit -- if any : int
+Weapon Bonus to Hit -- if any : int (negative numbers cause decrease)
 Weapon Damage Dice -- if any : int
 Weapon DamageBonus -- if any : int
 Armor Bonus -- if any : int

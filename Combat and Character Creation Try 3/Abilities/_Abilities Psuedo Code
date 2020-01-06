@@ -1,0 +1,47 @@
+Things abilities should do:
+
+Different abilities
+
+Put into a list 
+
+Make abilities part of the character class
+
+Need to add to character class :
+public:
+	setAbilitySTRBonus() -- int
+	getAbilitySTRBonus() -- int
+	setAbilityDEXBonus() -- int
+	getAbilityDEXBonus() -- int
+	setAbilityCONBonus() -- int
+	getAbilityCONBonus() -- int
+	setAbilityINTBonus() -- int
+	getAbilityINTBonus() -- int
+	setAbilityWISBonus() -- int
+	getAbilityWISBonus() -- int
+	setAbilityCHABonus() -- int
+	getAbilityCHABonus() -- int
+
+private:
+	AbilitySTRBonus -- int
+	AbilityDEXBonus -- int
+	AbilityCONBonus -- int
+	AbilityINTBonus -- int
+	AbilityWISBonus -- int
+	AbilityCHABonus -- int
+
+vectors : 
+
+	1. The names of the abilities the game has
+	
+	2. The abilities the player has
+	
+	3. A .txt list file of the player's abilities 
+		1. This file needs to be writen during character creation
+		2. This file needs to be read from when the player is loaded in
+	
+	4. An abilities .txt file should be read into a vectors
+	
+	
+	
+	
+Player vectors 

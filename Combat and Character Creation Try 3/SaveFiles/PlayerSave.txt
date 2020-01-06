@@ -5,17 +5,17 @@ Human
 
 Swashbuckler
 
-19
+12
+16
 15
-10
-17
-18
-7
-10
-10
+14
+9
+15
+0
+0
 0
 0
 
 
 
-Start
+TextFiles\\Intro.txt

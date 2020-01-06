@@ -26,6 +26,7 @@ std::string PlayerControls::PlayerInput()
 	Cll.Grey();
 	std::cout << ">> ";
 	std::getline(std::cin, CommandString);
+	std::cout << std::endl;
 	return CommandString;
 }
 

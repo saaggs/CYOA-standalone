@@ -11,10 +11,14 @@
 #include "FCharacter.h"
 #include "TextWrapAndCAPS.h"
 #include "TextColors.h"
+#include "PlayerControls.h"
+#include "FILESGame.h"
 
 TextWrapAndCAPS TWC;
 TextColors C;
-
+Abilities Ability;
+PlayerControls Control;
+FILESGame IGA;
 
 Character::Character()
 {
@@ -198,7 +202,24 @@ std::string Character::GetPlayerIntroduction()
 
 void Character::PlayerAbilities()
 {
-	std::cout << "Player Abilities is running. \n";
+	C.Green();
+	std::cout << std::endl;
+	std::cout << "You will be choosing from the following abilities: \n\n";
+	for (Abilities Ability : GameAbilities)
+	{
+		std::cout << "Name : " << Ability.getAbilityName() << std::endl;
+		std::cout << "Desc : " << Ability.getAbilityDescription() << std::endl;
+		std::cout << "STRB : " << Ability.getAbilitySTRBonus() << std::endl;
+		std::cout << "DEXB : " << Ability.getAbilityDEXBonus() << std::endl;
+		std::cout << "CONB : " << Ability.getAbilityCONBonus() << std::endl;
+		std::cout << "INTB : " << Ability.getAbilityINTBonus() << std::endl;
+		std::cout << "WISB : " << Ability.getAbilityWISBonus() << std::endl;
+		std::cout << "CHAB : " << Ability.getAbilityCHABonus() << std::endl;
+		std::cout << "THPB : " << Ability.getTotalAbilityHPModifier() << std::endl;
+		std::cout << "CHPB : " << Ability.getCurrentAbilityHPModifier() << std::endl;
+		std::cout << "Reju : " << Ability.getRejuvination() << std::endl << std::endl;
+	}
+	std::cout << "GameAbilities Size : " << GameAbilities.size() << std::endl;
 }
 
 std::string Character::GenerateNPCName(std::string FileName)
@@ -325,6 +346,11 @@ void Character::RollStats()
 	return;
 }
 
+std::vector<Abilities> Character::GetPlayerAbilitiesVector()
+{
+	return std::vector<Abilities>(PlayerAbilitiesVector);
+}
+
 int Character::SetSTR(int str)
 {
 	MySTR = str;
@@ -347,9 +373,20 @@ int Character::GetSTRBonus()
 	return MySTRBonus;
 }
 
+void Character::SetAbilitiesSTRBonus(int AbilityBonus)
+{
+	MyAbilitiesSTRBonus = AbilityBonus;
+	return;
+}
+
+int Character::GetAbilitiesSTRBonus()
+{
+	return MyAbilitiesSTRBonus;
+}
+
 int Character::SetTotalSTR()
 {
-	MyTotalSTR = MySTR + MySTRBonus;
+	MyTotalSTR = MySTR + MySTRBonus + MyAbilitiesSTRBonus;
 	return 0;
 }
 
@@ -382,7 +419,7 @@ int Character::GetDEXBonus()
 
 int Character::SetTotalDEX()
 {
-	MyTotalDEX = MyDEX + MyDEXBonus;
+	MyTotalDEX = MyDEX + MyDEXBonus + MyAbilitiesDEXBonus;
 	return 0;
 }
 
@@ -415,7 +452,7 @@ int Character::GetCONBonus()
 
 int Character::SetTotalCON()
 {
-	MyTotalCON = MyCON + MyCONBonus;
+	MyTotalCON = MyCON + MyCONBonus + MyAbilitiesCONBonus;
 	return 0;
 }
 
@@ -448,7 +485,7 @@ int Character::GetINTBonus()
 
 int Character::SetTotalINT()
 {
-	MyTotalINT = MyINT + MyINTBonus;
+	MyTotalINT = MyINT + MyINTBonus + MyAbilitiesINTBonus;
 	return 0;
 }
 
@@ -481,7 +518,7 @@ int Character::GetWISBonus()
 
 int Character::SetTotalWIS()
 {
-	MyTotalWIS = MyWIS + MyWISBonus;
+	MyTotalWIS = MyWIS + MyWISBonus + MyAbilitiesWISBonus;
 	return 0;
 }
 
@@ -514,8 +551,13 @@ int Character::GetCHABonus()
 
 int Character::SetTotalCHA()
 {
-	MyTotalCHA = MyCHA + MyCHABonus;
+	MyTotalCHA = MyCHA + MyCHABonus + MyAbilitiesCHABonus;
 	return 0;
+}
+
+int Character::GetTotalCHA()
+{
+	return MyTotalCHA;
 }
 
 void Character::ApplyRaceStatMods()
@@ -721,8 +763,8 @@ std::string Character::SetPlayerIntroduction(std::string playerintro)
 
 void Character::GenerateStartingHP()
 {
-	MyTotalHP = GetBaseHPDie() + MyCONMod;
-	MyCurrentHP = MyTotalHP;
+	MyTHP = (IGA.RollAD(GetBaseHPDie() * 2) + MyCONMod * 2);
+	MyCHP = MyTHP;
 	return;
 }
 
@@ -765,15 +807,37 @@ int Character::GetMyBonusAC()
 	return MyBonusAC;
 }
 
-int Character::SetPlayerTotalHP(int totalhp)
+int Character::SetPlayerTHP(int totalhp)
 {
-	MyTotalHP = totalhp;
+	MyTHP = totalhp;
+	return 0;
+}
+
+int Character::GetPlayerTHP()
+{
+	return MyTHP;
+}
+
+int Character::SetPlayerTotalHP()
+{
+	MyTotalHP = MyTHP + AbilitiesTotalHP;
 	return 0;
 }
 
 int Character::GetMyTotalHP()
 {
 	return MyTotalHP;
+}
+
+int Character::SetPlayerCHP(int currenthp)
+{
+	MyCHP = currenthp;
+	return 0;
+}
+
+int Character::GetPlayerCHP()
+{
+	return MyCHP;
 }
 
 int Character::SetPlayerCurrentHP(int currenthp)
@@ -838,6 +902,235 @@ int Character::GetMyAC()
 	return MyAC;
 }
 
+void Character::ReadAvailableAbilitiesFromFile()
+{
+	std::ifstream AbilityFile("Abilities\\_Abilities List.txt");
+	std::string Line = "";
+	std::string text = "";
+	std::vector <std::string> AbilityStats;
+	if (AbilityFile.is_open())
+	{
+		while (std::getline(AbilityFile, Line))
+		{
+			text = "Abilities\\" + Line;
+			GameAbilitiesList.push_back(text);
+		}
+		AbilityFile.close();
+	}
+	for (std::string file : GameAbilitiesList)
+	{
+		std::ifstream AbilityFile(file);
+		if (AbilityFile.is_open())
+		{
+			while (std::getline(AbilityFile, Line))
+			{
+				text = Line;
+				AbilityStats.push_back(text);
+			}
+		}
+		std::string name = AbilityStats[0];
+		std::string description = AbilityStats[1];
+		int STRBonus = std::stoi(AbilityStats[2]);
+		int DEXBonus = std::stoi(AbilityStats[3]);
+		int CONBonus = std::stoi(AbilityStats[4]);
+		int INTBonus = std::stoi(AbilityStats[5]);
+		int WISBonus = std::stoi(AbilityStats[6]);
+		int CHABonus = std::stoi(AbilityStats[7]);
+		int TotalHP = std::stoi(AbilityStats[8]);
+		int CurrentHP = std::stoi(AbilityStats[9]);
+		int rejuvinate = std::stoi(AbilityStats[10]);
+		Ability.CreateAbility(name, 
+			description, 
+			STRBonus, 
+			DEXBonus, 
+			CONBonus,
+			INTBonus,
+			WISBonus,
+			CHABonus,
+			TotalHP,
+			CurrentHP,
+			rejuvinate);
+		GameAbilities.push_back(Ability);
+		AbilityStats.clear();
+	}
+	GameAbilitiesList.clear();
+	return;
+}
+
+void Character::ClearGameAbilities()
+{
+	GameAbilitiesList.clear();
+	GameAbilities.clear();
+	TempGameAbilities.clear();
+	return;
+}
+
+void Character::AssignPlayerAbilitiesFromGameAbilities(std::string AbilityName)
+{
+	for (Abilities Ability : PlayerAbilitiesVector)
+	{
+		if (Ability.getAbilityName() == AbilityName)
+		{
+			C.Yellow();
+			std::cout << "You already have this ability. \n\n";
+			return;
+		}
+	}
+	int count = 0;
+	for (Abilities Ability : TempGameAbilities)
+	{
+		if (Ability.getAbilityName() == AbilityName)
+		{
+			std::string AbilityListName = Ability.getAbilityName() + ".txt";
+			PlayerAbilitiesList.push_back(AbilityListName);
+			PlayerAbilitiesVector.push_back(Ability); 
+			/*TODO Error is below -- I'm trying to erase abilities from TempGameAbilities when 
+			they are chosen during character creation */
+			int size = TempGameAbilities.size();
+			std::cout << "\nTemp Erased Size is now : " << TempGameAbilities.size() << std::endl;
+			std::cout << "Count is now : " << count << std::endl;
+			TempGameAbilities.erase(TempGameAbilities.begin()+count);
+			std::cout << "\nTemp Erased Size is now : " << TempGameAbilities.size() << std::endl;
+			//std::cout << "Count is now : " << count << std::endl;
+			//TempGameAbilities.resize(size - 1);
+			for (Abilities Ability : PlayerAbilitiesVector)
+			{
+				if (Ability.getAbilityName() == Control.GetCommand())
+				{
+					C.Green();
+					std::cout << "\nYou have chosen ";
+					C.Purple();
+					std::cout << Ability.getAbilityName() << std::endl << std::endl;
+					C.Green();
+				}
+			}
+			C.Green();
+			std::cout << "Player Abilities: \n";
+			for (Abilities Ability : PlayerAbilitiesVector)
+			{
+				C.Purple();
+				std::cout << Ability.getAbilityName() << std::endl;
+			}
+			WritePlayerAbilityListToFile();
+			return;
+		}
+		count++;
+	}
+	return;
+}
+
+void Character::AssignAbilityBonuses()
+{
+	int TempSTRBonus = 0;
+	int TempDEXBonus = 0;
+	int TempCONBonus = 0;
+	int TempINTBonus = 0;
+	int TempWISBonus = 0;
+	int TempCHABonus = 0;
+	int TempCHP = 0;
+	int TempTHP = 0;
+	int TempRejuv = 0;
+	for (Abilities Ability : PlayerAbilitiesVector)
+	{
+		TempSTRBonus = TempSTRBonus + Ability.getAbilitySTRBonus();
+		TempDEXBonus = TempDEXBonus + Ability.getAbilityDEXBonus();
+		TempCONBonus = TempCONBonus + Ability.getAbilityCONBonus();
+		TempINTBonus = TempINTBonus + Ability.getAbilityINTBonus();
+		TempWISBonus = TempWISBonus + Ability.getAbilityWISBonus();
+		TempCHABonus = TempCHABonus + Ability.getAbilityCHABonus();
+		TempCHP = TempCHP + Ability.getCurrentAbilityHPModifier();
+		TempTHP = TempTHP + Ability.getTotalAbilityHPModifier();
+		TempRejuv = TempRejuv + Ability.getRejuvination();
+	}
+	MyAbilitiesSTRBonus = TempSTRBonus;
+	MyAbilitiesDEXBonus = TempDEXBonus;
+	MyAbilitiesCONBonus = TempCONBonus;
+	MyAbilitiesINTBonus = TempINTBonus;
+	MyAbilitiesWISBonus = TempWISBonus;
+	MyAbilitiesCHABonus = TempCHABonus;
+	AbilitiesCurrentHP = TempCHP;
+	AbilitiesTotalHP = TempTHP;
+	Rejuvination = TempRejuv;
+	return;
+}
+
+void Character::ResetAbilityBonuses()
+{
+	MyAbilitiesSTRBonus = 0;
+	MyAbilitiesDEXBonus = 0;
+	MyAbilitiesCONBonus = 0;
+	MyAbilitiesINTBonus = 0;
+	MyAbilitiesWISBonus = 0;
+	MyAbilitiesCHABonus = 0;
+	AbilitiesCurrentHP = 0;
+	AbilitiesTotalHP = 0;
+	Rejuvination = 0;
+}
+
+void Character::WritePlayerAbilityListToFile()
+{
+	std::string text = "";
+	std::ofstream PlayerAbilitySave("SaveFiles\\PlayerAbilitySave.txt");
+	for (std::string Ability : PlayerAbilitiesList)
+	{
+		text = Ability;
+		PlayerAbilitySave << text << std::endl;
+	}
+	PlayerAbilitySave.close();
+	return;
+}
+
+void Character::ChoosePlayerAbilities()
+{
+	C.Green();
+	std::cout << std::endl;
+	/*TODO make it so Player Ability Vector Size limit is set via a text file and not 
+	hard coded
+	*/
+	for (Abilities Ability : GameAbilities)
+	{
+		TempGameAbilities.push_back(Ability);
+	}
+	while (PlayerAbilitiesVector.size() != 3)
+	{
+		C.Green();
+		std::cout << "Please choose an ability from the following list: \n\n";
+		for (Abilities Ability : TempGameAbilities)
+		{
+			C.Purple();
+			std::cout << Ability.getAbilityName() << std::endl;
+			C.Green();
+		}
+		std::string Instructions = "\nChoose an ability by entering the ability's name "
+			"into the console or type 'help' for a list of commands. \n\n";
+		TWC.outputText(Instructions);
+		Control.PlayerInput();
+		AssignPlayerAbilitiesFromGameAbilities(Control.GetCommand());
+	}
+	AssignAbilityBonuses();
+	return;
+}
+
+void Character::ClearPlayerAbilities()
+{
+	PlayerAbilitiesVector.clear();
+	PlayerAbilitiesList.clear();
+	return;
+}
+
+void Character::GetAndPrintPlayerAbilities()
+{
+	C.Green();
+	std::cout << "Abilites: \n\n";
+	for (Abilities Ability : PlayerAbilitiesVector)
+	{
+		Ability.PrintAbilitySkinny();
+	}
+	std::cout << std::endl;
+	C.Green();
+	return;
+}
+
 int Character::GetMyBaseDamage()
 {
 	return MyBaseDamage;
@@ -846,6 +1139,17 @@ int Character::GetMyBaseDamage()
 void Character::TakeDamage(int Damage)
 {
 	MyCurrentHP = (MyCurrentHP - Damage);
+	return;
+}
+
+void Character::HealDamage(int Heal)
+{
+	MyCurrentHP = (MyCurrentHP + Heal);
+	if (MyCurrentHP >= MyTotalHP)
+	{
+		MyCurrentHP = MyTotalHP;
+	}
+	return;
 }
 
 bool Character::SetArmorEquipped(std::string trufal)
@@ -941,3 +1245,4 @@ bool Character::CheckIfDead()
 	else
 	return false;
 }
+

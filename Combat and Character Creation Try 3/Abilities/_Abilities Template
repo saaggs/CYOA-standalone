@@ -1,4 +1,12 @@
-Speak with animal
-Speak with plants
-Speak with dead
-Combat Form
+Ability Name : String
+Ability Description : String
+STR Bonus : int
+DEX Bonus : int
+CON Bonus : int
+INT Bonus : int
+WIS Bonus : int
+CHA Bonus : int
+Changes to Total HP : int
+Changes to Current HP : int
+Rejuvination : int
+Activated : bool -- 1 for true, 0 for false
